@@ -18,7 +18,7 @@ public class CreditCard {
 
 	// Attributes
 	private String	holder;
-	private String	makeCreditCard;
+	private String	make;
 	private String	number;
 	private Integer	expirationMonth;
 	private Integer	expirationYear;
@@ -38,12 +38,12 @@ public class CreditCard {
 
 	@NotBlank
 	@SafeHtml(whitelistType = WhiteListType.NONE)
-	public String getMakeCreditCard() {
-		return this.makeCreditCard;
+	public String getMake() {
+		return this.make;
 	}
 
-	public void setMakeCreditCard(final String makeCreditCard) {
-		this.makeCreditCard = makeCreditCard;
+	public void setMake(final String make) {
+		this.make = make;
 	}
 
 	@NotBlank
