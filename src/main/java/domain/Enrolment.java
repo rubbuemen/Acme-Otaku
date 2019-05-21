@@ -18,18 +18,18 @@ import org.hibernate.validator.constraints.SafeHtml.WhiteListType;
 public class Enrolment extends DomainEntity {
 
 	// Attributes
-	private String	comment;
+	private String	comments;
 	private String	status;
 
 
 	// Getters and Setters
 	@SafeHtml(whitelistType = WhiteListType.NONE)
-	public String getComment() {
-		return this.comment;
+	public String getComments() {
+		return this.comments;
 	}
 
-	public void setComment(final String comment) {
-		this.comment = comment;
+	public void setComments(final String comments) {
+		this.comments = comments;
 	}
 
 	@NotBlank

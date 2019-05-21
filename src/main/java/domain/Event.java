@@ -102,10 +102,9 @@ public class Event extends DomainEntity {
 
 
 	// Relationships
-	private Collection<Activity>		activities;
-	private Collection<Day>				days;
-	private Collection<Registration>	registrations;
-	private Collection<Sponsorship>		sponsorships;
+	private Collection<Activity>	activities;
+	private Collection<Day>			days;
+	private Collection<Sponsorship>	sponsorships;
 
 
 	@Valid
@@ -130,17 +129,6 @@ public class Event extends DomainEntity {
 
 	public void setDays(final Collection<Day> days) {
 		this.days = days;
-	}
-
-	@Valid
-	@EachNotNull
-	@OneToMany(mappedBy = "event")
-	public Collection<Registration> getRegistrations() {
-		return this.registrations;
-	}
-
-	public void setRegistrations(final Collection<Registration> registrations) {
-		this.registrations = registrations;
 	}
 
 	@Valid

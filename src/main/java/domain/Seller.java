@@ -16,21 +16,8 @@ import cz.jirutka.validator.collection.constraints.EachNotNull;
 public class Seller extends Actor {
 
 	// Relationships
-	private Collection<Registration>	registrations;
-	private Collection<Stand>			stands;
-	private Collection<Answer>			answers;
+	private Collection<Stand>	stands;
 
-
-	@Valid
-	@EachNotNull
-	@OneToMany(mappedBy = "seller")
-	public Collection<Registration> getRegistrations() {
-		return this.registrations;
-	}
-
-	public void setRegistrations(final Collection<Registration> registrations) {
-		this.registrations = registrations;
-	}
 
 	@Valid
 	@EachNotNull
@@ -41,17 +28,6 @@ public class Seller extends Actor {
 
 	public void setStands(final Collection<Stand> stands) {
 		this.stands = stands;
-	}
-
-	@Valid
-	@EachNotNull
-	@OneToMany
-	public Collection<Answer> getAnswers() {
-		return this.answers;
-	}
-
-	public void setAnswers(final Collection<Answer> answers) {
-		this.answers = answers;
 	}
 
 }

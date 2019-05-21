@@ -6,6 +6,8 @@ import java.util.Collection;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
@@ -64,6 +66,7 @@ public class Stand extends DomainEntity {
 
 	// Relationships
 	private Collection<Product>	products;
+	private Collection<Event>	events;
 
 
 	@Valid
@@ -75,6 +78,17 @@ public class Stand extends DomainEntity {
 
 	public void setProducts(final Collection<Product> products) {
 		this.products = products;
+	}
+
+	@Valid
+	@EachNotNull
+	@ManyToMany(fetch = FetchType.EAGER)
+	public Collection<Event> getEvents() {
+		return this.events;
+	}
+
+	public void setEvents(final Collection<Event> events) {
+		this.events = events;
 	}
 
 }

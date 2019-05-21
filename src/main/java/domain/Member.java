@@ -11,7 +11,6 @@ import javax.persistence.OneToMany;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.SafeHtml;
 import org.hibernate.validator.constraints.SafeHtml.WhiteListType;
 
@@ -26,7 +25,6 @@ public class Member extends Actor {
 
 
 	// Getters and Setters
-	@NotBlank
 	@SafeHtml(whitelistType = WhiteListType.NONE)
 	@Pattern(regexp = "^PRESIDENT|VICEPRESIDENT|SECRETARY|TREASURE|VOCAL|MEMBER$")
 	public String getRole() {

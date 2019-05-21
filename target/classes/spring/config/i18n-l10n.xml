@@ -19,7 +19,6 @@
 
 		<value>/views/activity/messages</value>
 		<value>/views/actor/messages</value>
-		<value>/views/answer/messages</value>
 		<value>/views/application/messages</value>
 		<value>/views/association/messages</value>
 		<value>/views/box/messages</value>
@@ -31,7 +30,6 @@
 		<value>/views/headquarter/messages</value>
 		<value>/views/meeting/messages</value>
 		<value>/views/product/messages</value>
-		<value>/views/registration/messages</value>
 		<value>/views/report/messages</value>
 		<value>/views/score/messages</value>
 		<value>/views/socialProfile/messages</value>

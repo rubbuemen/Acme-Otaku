@@ -21,7 +21,6 @@
 		<bean class="converters.ActivityToStringConverter" />
 		<bean class="converters.ActorToStringConverter" />
 		<bean class="converters.AdministratorToStringConverter" />
-		<bean class="converters.AnswerToStringConverter" />
 		<bean class="converters.ApplicationToStringConverter" />
 		<bean class="converters.AssociationToStringConverter" />
 		<bean class="converters.BoxToStringConverter" />
@@ -35,7 +34,6 @@
 		<bean class="converters.MemberToStringConverter" />
 		<bean class="converters.MessageToStringConverter" />
 		<bean class="converters.ProductToStringConverter" />
-		<bean class="converters.RegistrationToStringConverter" />
 		<bean class="converters.ReportToStringConverter" />
 		<bean class="converters.ScoreToStringConverter" />
 		<bean class="converters.SellerToStringConverter" />
@@ -48,7 +46,6 @@
 		<bean class="converters.StringToActivityConverter" />
 		<bean class="converters.StringToActorConverter" />
 		<bean class="converters.StringToAdministratorConverter" />
-		<bean class="converters.StringToAnswerConverter" />
 		<bean class="converters.StringToApplicationConverter" />
 		<bean class="converters.StringToAssociationConverter" />
 		<bean class="converters.StringToBoxConverter" />
@@ -62,7 +59,6 @@
 		<bean class="converters.StringToMemberConverter" />
 		<bean class="converters.StringToMessageConverter" />
 		<bean class="converters.StringToProductConverter" />
-		<bean class="converters.StringToRegistrationConverter" />
 		<bean class="converters.StringToReportConverter" />
 		<bean class="converters.StringToScoreConverter" />
 		<bean class="converters.StringToSellerConverter" />
