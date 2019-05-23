@@ -19,22 +19,57 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="events" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="event.name" var="name" />
+	<display:column property="name" title="${name}" />
 	
+	<spring:message code="event.description" var="description" />
+	<display:column property="description" title="${description}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="event.address" var="address" />
+	<display:column property="address" title="${address}" />
+	
+	<spring:message code="event.moment" var="moment" />
+	<display:column title="${moment}">
+			<fmt:formatDate var="format" value="${row.moment}" pattern="dd/MM/YYYY HH:mm" />
+			<jstl:out value="${format}" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="event.tags" var="tags" />
+	<display:column property="tags" title="${tags}" />
+	
+	<spring:message code="event.days" var="daysH" />
+		<display:column title="${daysH}" >
+			<acme:button url="day/member/list.do?eventId=${row.id}" code="button.show" />
+		</display:column>
+	
+	<spring:message code="event.edit" var="editH" />
+	<display:column title="${editH}" >
+		<jstl:if test="${!row.isFinalMode}">
+			<acme:button url="event/member/edit.do?eventId=${row.id}" code="button.edit" />
+		</jstl:if>	
+	</display:column>
+	
+	<spring:message code="event.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<jstl:if test="${!row.isFinalMode}">
+			<acme:button url="event/member/delete.do?eventId=${row.id}" code="button.delete" />
+		</jstl:if>	
+	</display:column>
+	
+	<spring:message code="event.changeFinalMode" var="changeFinalModeH" />
+	<display:column title="${changeFinalModeH}" >
+		<jstl:choose>
+			<jstl:when test="${!row.isFinalMode}">
+				<acme:button url="event/member/change.do?eventId=${row.id}" code="button.change" />
+			</jstl:when>
+			<jstl:when test="${row.isFinalMode}">
+				<spring:message code="event.isFinalMode" />
+			</jstl:when>
+		</jstl:choose>
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="event/member/create.do" code="button.create" />

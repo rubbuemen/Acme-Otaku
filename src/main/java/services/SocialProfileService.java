@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.SocialProfileRepository;
+import domain.Actor;
 import domain.SocialProfile;
 
 @Service
@@ -19,88 +20,143 @@ public class SocialProfileService {
 
 	// Managed repository
 	@Autowired
-	private SocialProfileRepository	socialprofileRepository;
-
+	private SocialProfileRepository	socialProfileRepository;
 
 	// Supporting services
+	@Autowired
+	private ActorService			actorService;
+
 
 	// Simple CRUD methods
+	// R27.1
 	public SocialProfile create() {
 		SocialProfile result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+
 		result = new SocialProfile();
+
+		result.setActor(actorLogged);
+
 		return result;
 	}
 
 	public Collection<SocialProfile> findAll() {
 		Collection<SocialProfile> result;
 
-		result = this.socialprofileRepository.findAll();
+		result = this.socialProfileRepository.findAll();
 		Assert.notNull(result);
 
 		return result;
 	}
 
-	public SocialProfile findOne(final int socialprofileId) {
-		Assert.isTrue(socialprofileId != 0);
+	public SocialProfile findOne(final int socialProfileId) {
+		Assert.isTrue(socialProfileId != 0);
 
 		SocialProfile result;
 
-		result = this.socialprofileRepository.findOne(socialprofileId);
+		result = this.socialProfileRepository.findOne(socialProfileId);
 		Assert.notNull(result);
 
 		return result;
 	}
 
-	public SocialProfile save(final SocialProfile socialprofile) {
-		Assert.notNull(socialprofile);
+	// R27.1
+	public SocialProfile save(final SocialProfile socialProfile) {
+		Assert.notNull(socialProfile);
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
 
 		SocialProfile result;
 
-		if (socialprofile.getId() == 0)
-			result = this.socialprofileRepository.save(socialprofile);
-		else
-			result = this.socialprofileRepository.save(socialprofile);
+		if (socialProfile.getId() != 0) {
+			final Actor actorOwner = this.actorService.findActorBySocialProfileId(socialProfile.getId());
+			Assert.isTrue(actorLogged.equals(actorOwner), "The logged actor is not the owner of this entity");
+		}
+
+		socialProfile.setActor(actorLogged);
+		result = this.socialProfileRepository.save(socialProfile);
 
 		return result;
 	}
 
-	public void delete(final SocialProfile socialprofile) {
-		Assert.notNull(socialprofile);
-		Assert.isTrue(socialprofile.getId() != 0);
-		Assert.isTrue(this.socialprofileRepository.exists(socialprofile.getId()));
+	// R27.1
+	public void delete(final SocialProfile socialProfile) {
+		Assert.notNull(socialProfile);
+		Assert.isTrue(socialProfile.getId() != 0);
+		Assert.isTrue(this.socialProfileRepository.exists(socialProfile.getId()));
 
-		this.socialprofileRepository.delete(socialprofile);
+		this.socialProfileRepository.delete(socialProfile);
 	}
-
 
 	// Other business methods
+	// R27.1
+	public Collection<SocialProfile> findSocialProfilesByActorLogged() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+
+		Collection<SocialProfile> result;
+
+		result = this.socialProfileRepository.findSocialProfilesByActorId(actorLogged.getId());
+
+		return result;
+	}
+
+	public SocialProfile findSocialProfileActorLogged(final int socialProfileId) {
+		Assert.isTrue(socialProfileId != 0);
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+
+		final Actor actorOwner = this.actorService.findActorBySocialProfileId(socialProfileId);
+		Assert.isTrue(actorLogged.equals(actorOwner), "The logged actor is not the owner of this entity");
+
+		final SocialProfile result;
+
+		result = this.socialProfileRepository.findOne(socialProfileId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public void deleteSocialProfiles() {
+		final Actor actor = this.actorService.findActorLogged();
+
+		final Collection<SocialProfile> socialProfiles = this.socialProfileRepository.findSocialProfilesByActorId(actor.getId());
+		for (final SocialProfile sp : socialProfiles)
+			this.socialProfileRepository.delete(sp);
+	}
+
 
 	// Reconstruct methods
 	@Autowired
 	private Validator	validator;
 
 
-	public SocialProfile reconstruct(final SocialProfile socialprofile, final BindingResult binding) {
+	public SocialProfile reconstruct(final SocialProfile socialProfile, final BindingResult binding) {
 		SocialProfile result;
 
-		if (socialprofile.getId() == 0)
-			result = socialprofile;
-		else {
-			final SocialProfile originalSocialProfile = this.socialprofileRepository.findOne(socialprofile.getId());
+		final Actor actorLogged = this.actorService.findActorLogged();
+
+		if (socialProfile.getId() == 0) {
+			result = socialProfile;
+			result.setActor(actorLogged);
+		} else {
+			final SocialProfile originalSocialProfile = this.socialProfileRepository.findOne(socialProfile.getId());
 			Assert.notNull(originalSocialProfile, "This entity does not exist");
-			result = socialprofile;
+			result = socialProfile;
+			result.setActor(actorLogged);
 		}
 
 		this.validator.validate(result, binding);
-
-		this.socialprofileRepository.flush();
 
 		return result;
 	}
 
 	public void flush() {
-		this.socialprofileRepository.flush();
+		this.socialProfileRepository.flush();
 	}
 
 }

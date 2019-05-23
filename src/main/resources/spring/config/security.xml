@@ -43,9 +43,15 @@
 		<security:intercept-url pattern="/actor/register-seller.do" access="isAnonymous()" />
 		<security:intercept-url pattern="/actor/register-sponsor.do" access="isAnonymous()" />
 		
-		<security:intercept-url pattern="/actor/visitor/**" access="hasRole('VISITOR')" />
-		
 		<security:intercept-url pattern="/actor/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/association/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/application/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/member/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/event/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/day/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/activity/member/**" access="hasRole('MEMBER')" />
+		
+		<security:intercept-url pattern="/actor/visitor/**" access="hasRole('VISITOR')" />
 
 		<security:intercept-url pattern="/actor/seller/**" access="hasRole('SELLER')" />
 		

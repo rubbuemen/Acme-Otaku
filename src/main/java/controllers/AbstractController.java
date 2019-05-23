@@ -13,6 +13,9 @@ package controllers;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ClassUtils;
@@ -22,6 +25,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.ActorService;
 import services.SystemConfigurationService;
+import domain.Actor;
+import domain.Association;
+import domain.Member;
 import domain.SystemConfiguration;
 
 @Controller
@@ -62,6 +68,19 @@ public class AbstractController {
 			model.addAttribute("welcomeMessage", systemConfiguration.getWelcomeMessageEnglish());
 		else
 			model.addAttribute("welcomeMessage", systemConfiguration.getWelcomeMessageSpanish());
+
+		final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (!(authentication instanceof AnonymousAuthenticationToken)) {
+			final Actor actorLogged = this.actorService.findActorLogged();
+			if (actorLogged instanceof Member) {
+				final Member memberLogged = (Member) actorLogged;
+				final String role = memberLogged.getRole();
+				final Association association = memberLogged.getAssociation();
+				model.addAttribute("role", role);
+				model.addAttribute("association", association);
+
+			}
+		}
 
 	}
 

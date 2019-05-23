@@ -2,6 +2,7 @@
 package services;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.SellerRepository;
+import security.Authority;
+import security.UserAccount;
+import domain.Actor;
 import domain.Seller;
+import domain.Stand;
+import forms.SellerForm;
 
 @Service
 @Transactional
@@ -21,14 +27,30 @@ public class SellerService {
 	@Autowired
 	private SellerRepository	sellerRepository;
 
-
 	// Supporting services
+	@Autowired
+	private UserAccountService	userAccountService;
+
+	@Autowired
+	private ActorService		actorService;
+
 
 	// Simple CRUD methods
+	// R33.1
 	public Seller create() {
 		Seller result;
 
 		result = new Seller();
+		final Collection<Stand> stands = new HashSet<>();
+		final UserAccount userAccount = this.userAccountService.create();
+		final Authority auth = new Authority();
+
+		auth.setAuthority(Authority.SELLER);
+		userAccount.addAuthority(auth);
+		result.setStands(stands);
+		result.setUserAccount(userAccount);
+		result.setIsSuspicious(false);
+
 		return result;
 	}
 
@@ -52,15 +74,24 @@ public class SellerService {
 		return result;
 	}
 
+	// R33.1
 	public Seller save(final Seller seller) {
 		Assert.notNull(seller);
 
 		Seller result;
 
-		if (seller.getId() == 0)
-			result = this.sellerRepository.save(seller);
-		else
-			result = this.sellerRepository.save(seller);
+		result = (Seller) this.actorService.save(seller);
+		result = this.sellerRepository.save(result);
+
+		return result;
+	}
+
+	public Seller saveAuxiliar(final Seller seller) {
+		Assert.notNull(seller);
+
+		Seller result;
+
+		result = this.sellerRepository.save(seller);
 
 		return result;
 	}
@@ -70,6 +101,17 @@ public class SellerService {
 		Assert.isTrue(seller.getId() != 0);
 		Assert.isTrue(this.sellerRepository.exists(seller.getId()));
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
+
+		final Seller sellerLogged = (Seller) actorLogged;
+
+		this.actorService.deleteEntities(sellerLogged);
+
+		//Completar
+
+		this.sellerRepository.flush();
 		this.sellerRepository.delete(seller);
 	}
 
@@ -81,20 +123,38 @@ public class SellerService {
 	private Validator	validator;
 
 
-	public Seller reconstruct(final Seller seller, final BindingResult binding) {
-		Seller result;
+	public SellerForm reconstruct(final SellerForm sellerForm, final BindingResult binding) {
+		SellerForm result;
+		final Seller seller = sellerForm.getActor();
 
-		if (seller.getId() == 0)
-			result = seller;
-		else {
-			final Seller originalSeller = this.sellerRepository.findOne(seller.getId());
-			Assert.notNull(originalSeller, "This entity does not exist");
-			result = seller;
+		if (seller.getId() == 0) {
+			final Collection<Stand> stands = new HashSet<>();
+			final UserAccount userAccount = this.userAccountService.create();
+			final Authority auth = new Authority();
+			auth.setAuthority(Authority.SELLER);
+			userAccount.addAuthority(auth);
+			userAccount.setUsername(sellerForm.getActor().getUserAccount().getUsername());
+			userAccount.setPassword(sellerForm.getActor().getUserAccount().getPassword());
+			seller.setStands(stands);
+			seller.setUserAccount(userAccount);
+			seller.setIsSuspicious(false);
+			sellerForm.setActor(seller);
+		} else {
+			final Seller res = this.sellerRepository.findOne(seller.getId());
+			Assert.notNull(res, "This entity does not exist");
+			res.setName(seller.getName());
+			res.setMiddleName(seller.getMiddleName());
+			res.setSurname(seller.getSurname());
+			res.setPhoto(seller.getPhoto());
+			res.setEmail(seller.getEmail());
+			res.setPhoneNumber(seller.getPhoneNumber());
+			res.setAddress(seller.getAddress());
+			sellerForm.setActor(res);
 		}
 
-		this.validator.validate(result, binding);
+		result = sellerForm;
 
-		this.sellerRepository.flush();
+		this.validator.validate(result, binding);
 
 		return result;
 	}

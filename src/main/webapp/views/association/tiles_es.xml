@@ -19,10 +19,10 @@
 		<put-attribute name="title" value="Editar asociación" />
 		<put-attribute name="body" value="/views/association/edit.jsp" />
 	</definition>
-
-	<definition name="association/list" extends="master.page">
-		<put-attribute name="title" value="Lista de asociaciones" />
-		<put-attribute name="body" value="/views/association/list.jsp" />
+	
+	<definition name="association/show" extends="master.page">
+		<put-attribute name="title" value="Asociación" />
+		<put-attribute name="body" value="/views/association/show.jsp" />
 	</definition>
 
 

@@ -15,26 +15,18 @@
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
-<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
-
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+<display:table pagesize="5" class="displaytag" name="boxes" id="row" requestURI="message/move.do">
+	<spring:message code="box.name" var="name" />
+	<display:column property="name" title="${name}" />
 	
-	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="message.move" var="move" />
+	<display:column title="${move}">
+		<acme:button url="message/saveMove.do?boxId=${row.id}&messageId=${messageEntity.id}" code="button.move" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
-	</display:column>
-			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:cancel url="box/list.do" code="button.cancel" />

@@ -18,21 +18,35 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="event">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
 	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
-	<br />
-	
+	<fieldset>
+		<legend><spring:message code="event.infoEvent"/></legend>
+			<acme:textbox code="event.name" path="name" placeholder="Lorem Ipsum"/>
+			<br />
+			
+			<acme:textbox code="event.description" path="description" placeholder="Lorem Ipsum"/>
+			<br />
+			
+			<acme:textbox code="event.address" path="address" placeholder="Lorem Ipsum"/>
+			<br />
+			
+			<acme:textarea code="event.tags" path="tags" placeholder="Lorem ipsum, Lorem ipsum, Lorem ipsum, Lorem ipsum" />
+			<br />
+			
+			<acme:select items="${activities}" itemLabel="name" code="event.activities" path="activities" multiple="true" />
+			<br />
+	</fieldset>
+
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${event.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
 			<acme:submit name="save" code="button.save" />
 		</jstl:otherwise>
 	</jstl:choose>
-	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="event/member/list.do" code="button.cancel" />
 </form:form>

@@ -29,6 +29,8 @@
 		<value>/views/event/messages</value>
 		<value>/views/headquarter/messages</value>
 		<value>/views/meeting/messages</value>
+		<value>/views/member/messages</value>
+		<value>/views/message/messages</value>
 		<value>/views/product/messages</value>
 		<value>/views/report/messages</value>
 		<value>/views/score/messages</value>

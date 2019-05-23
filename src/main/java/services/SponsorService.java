@@ -2,6 +2,7 @@
 package services;
 
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,12 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.SponsorRepository;
+import security.Authority;
+import security.UserAccount;
+import domain.Actor;
 import domain.Sponsor;
+import domain.Sponsorship;
+import forms.SponsorForm;
 
 @Service
 @Transactional
@@ -21,14 +27,30 @@ public class SponsorService {
 	@Autowired
 	private SponsorRepository	sponsorRepository;
 
-
 	// Supporting services
+	@Autowired
+	private UserAccountService	userAccountService;
+
+	@Autowired
+	private ActorService		actorService;
+
 
 	// Simple CRUD methods
+	// R44.1
 	public Sponsor create() {
 		Sponsor result;
 
 		result = new Sponsor();
+		final Collection<Sponsorship> sponsorships = new HashSet<>();
+		final UserAccount userAccount = this.userAccountService.create();
+		final Authority auth = new Authority();
+
+		auth.setAuthority(Authority.SPONSOR);
+		userAccount.addAuthority(auth);
+		result.setSponsorships(sponsorships);
+		result.setUserAccount(userAccount);
+		result.setIsSuspicious(false);
+
 		return result;
 	}
 
@@ -52,15 +74,24 @@ public class SponsorService {
 		return result;
 	}
 
+	// R44.1
 	public Sponsor save(final Sponsor sponsor) {
 		Assert.notNull(sponsor);
 
 		Sponsor result;
 
-		if (sponsor.getId() == 0)
-			result = this.sponsorRepository.save(sponsor);
-		else
-			result = this.sponsorRepository.save(sponsor);
+		result = (Sponsor) this.actorService.save(sponsor);
+		result = this.sponsorRepository.save(result);
+
+		return result;
+	}
+
+	public Sponsor saveAuxiliar(final Sponsor sponsor) {
+		Assert.notNull(sponsor);
+
+		Sponsor result;
+
+		result = this.sponsorRepository.save(sponsor);
 
 		return result;
 	}
@@ -70,6 +101,17 @@ public class SponsorService {
 		Assert.isTrue(sponsor.getId() != 0);
 		Assert.isTrue(this.sponsorRepository.exists(sponsor.getId()));
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSponsor(actorLogged);
+
+		final Sponsor sponsorLogged = (Sponsor) actorLogged;
+
+		this.actorService.deleteEntities(sponsorLogged);
+
+		//Completar
+
+		this.sponsorRepository.flush();
 		this.sponsorRepository.delete(sponsor);
 	}
 
@@ -81,20 +123,38 @@ public class SponsorService {
 	private Validator	validator;
 
 
-	public Sponsor reconstruct(final Sponsor sponsor, final BindingResult binding) {
-		Sponsor result;
+	public SponsorForm reconstruct(final SponsorForm sponsorForm, final BindingResult binding) {
+		SponsorForm result;
+		final Sponsor sponsor = sponsorForm.getActor();
 
-		if (sponsor.getId() == 0)
-			result = sponsor;
-		else {
-			final Sponsor originalSponsor = this.sponsorRepository.findOne(sponsor.getId());
-			Assert.notNull(originalSponsor, "This entity does not exist");
-			result = sponsor;
+		if (sponsor.getId() == 0) {
+			final Collection<Sponsorship> sponsorships = new HashSet<>();
+			final UserAccount userAccount = this.userAccountService.create();
+			final Authority auth = new Authority();
+			auth.setAuthority(Authority.SPONSOR);
+			userAccount.addAuthority(auth);
+			userAccount.setUsername(sponsorForm.getActor().getUserAccount().getUsername());
+			userAccount.setPassword(sponsorForm.getActor().getUserAccount().getPassword());
+			sponsor.setSponsorships(sponsorships);
+			sponsor.setUserAccount(userAccount);
+			sponsor.setIsSuspicious(false);
+			sponsorForm.setActor(sponsor);
+		} else {
+			final Sponsor res = this.sponsorRepository.findOne(sponsor.getId());
+			Assert.notNull(res, "This entity does not exist");
+			res.setName(sponsor.getName());
+			res.setMiddleName(sponsor.getMiddleName());
+			res.setSurname(sponsor.getSurname());
+			res.setPhoto(sponsor.getPhoto());
+			res.setEmail(sponsor.getEmail());
+			res.setPhoneNumber(sponsor.getPhoneNumber());
+			res.setAddress(sponsor.getAddress());
+			sponsorForm.setActor(res);
 		}
 
-		this.validator.validate(result, binding);
+		result = sponsorForm;
 
-		this.sponsorRepository.flush();
+		this.validator.validate(result, binding);
 
 		return result;
 	}

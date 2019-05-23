@@ -2,6 +2,7 @@
 package services;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.DayRepository;
+import domain.Actor;
 import domain.Day;
+import domain.Event;
+import domain.Member;
 
 @Service
 @Transactional
@@ -21,14 +25,28 @@ public class DayService {
 	@Autowired
 	private DayRepository	dayRepository;
 
-
 	// Supporting services
+	@Autowired
+	ActorService			actorService;
+
+	@Autowired
+	EventService			eventService;
+
+	@Autowired
+	MemberService			memberService;
+
 
 	// Simple CRUD methods
+	//R14.1
 	public Day create() {
 		Day result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
 		result = new Day();
+
 		return result;
 	}
 
@@ -52,29 +70,82 @@ public class DayService {
 		return result;
 	}
 
-	public Day save(final Day day) {
+	//R14.1
+	public Day save(final Day day, final Event event) {
 		Assert.notNull(day);
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
 
 		Day result;
 
-		if (day.getId() == 0)
+		final Date currentMoment = new Date(System.currentTimeMillis());
+		if (day.getDate() != null)
+			Assert.isTrue(day.getDate().compareTo(currentMoment) > 0, "The date of the day must be future");
+
+		final Member memberOwner = this.memberService.findMemberByEventId(event.getId());
+		Assert.isTrue(actorLogged.equals(memberOwner), "The logged actor is not the owner of this entity");
+
+		if (day.getId() == 0) {
 			result = this.dayRepository.save(day);
-		else
+			final Collection<Day> daysEvent = event.getDays();
+			daysEvent.add(result);
+			event.setDays(daysEvent);
+			this.eventService.saveAuxiliar(event);
+		} else
 			result = this.dayRepository.save(day);
 
 		return result;
 	}
 
-	public void delete(final Day day) {
+	public Day saveAuxiliar(final Day day) {
+		Assert.notNull(day);
+
+		Day result;
+
+		result = this.dayRepository.save(day);
+
+		return result;
+	}
+
+	//R14.1
+	public void delete(final Day day, final Event event) {
 		Assert.notNull(day);
 		Assert.isTrue(day.getId() != 0);
 		Assert.isTrue(this.dayRepository.exists(day.getId()));
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Collection<Day> daysEvent = event.getDays();
+		Assert.isTrue(daysEvent.size() != 1, "The event must be at least one day");
+
+		daysEvent.remove(day);
+		event.setDays(daysEvent);
+		this.eventService.saveAuxiliar(event);
+
 		this.dayRepository.delete(day);
 	}
 
-
 	// Other business methods
+	//R14.1
+	public Collection<Day> findDaysByEvent(final int eventId) {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Collection<Day> result;
+
+		final Event event = this.eventService.findEventMemberLogged(eventId);
+
+		result = event.getDays();
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

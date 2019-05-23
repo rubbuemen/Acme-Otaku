@@ -11,7 +11,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.AdministratorRepository;
+import security.Authority;
+import security.UserAccount;
+import domain.Actor;
 import domain.Administrator;
+import forms.AdministratorForm;
 
 @Service
 @Transactional
@@ -21,14 +25,32 @@ public class AdministratorService {
 	@Autowired
 	private AdministratorRepository	administratorRepository;
 
-
 	// Supporting services
+	@Autowired
+	private ActorService			actorService;
+
+	@Autowired
+	private UserAccountService		userAccountService;
+
 
 	// Simple CRUD methods
+	// R16.1
 	public Administrator create() {
 		Administrator result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
 		result = new Administrator();
+		final UserAccount userAccount = this.userAccountService.create();
+		final Authority auth = new Authority();
+
+		auth.setAuthority(Authority.ADMIN);
+		userAccount.addAuthority(auth);
+		result.setUserAccount(userAccount);
+		result.setIsSuspicious(false);
+
 		return result;
 	}
 
@@ -43,7 +65,6 @@ public class AdministratorService {
 
 	public Administrator findOne(final int administratorId) {
 		Assert.isTrue(administratorId != 0);
-
 		Administrator result;
 
 		result = this.administratorRepository.findOne(administratorId);
@@ -52,15 +73,18 @@ public class AdministratorService {
 		return result;
 	}
 
+	// R16.1
 	public Administrator save(final Administrator administrator) {
 		Assert.notNull(administrator);
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
 		Administrator result;
 
-		if (administrator.getId() == 0)
-			result = this.administratorRepository.save(administrator);
-		else
-			result = this.administratorRepository.save(administrator);
+		result = (Administrator) this.actorService.save(administrator);
+		result = this.administratorRepository.save(result);
 
 		return result;
 	}
@@ -81,20 +105,35 @@ public class AdministratorService {
 	private Validator	validator;
 
 
-	public Administrator reconstruct(final Administrator administrator, final BindingResult binding) {
-		Administrator result;
+	public AdministratorForm reconstruct(final AdministratorForm administratorForm, final BindingResult binding) {
+		AdministratorForm result;
+		final Administrator administrator = administratorForm.getActor();
 
-		if (administrator.getId() == 0)
-			result = administrator;
-		else {
-			final Administrator originalAdministrator = this.administratorRepository.findOne(administrator.getId());
-			Assert.notNull(originalAdministrator, "This entity does not exist");
-			result = administrator;
+		if (administrator.getId() == 0) {
+			final UserAccount userAccount = this.userAccountService.create();
+			final Authority auth = new Authority();
+			auth.setAuthority(Authority.ADMIN);
+			userAccount.addAuthority(auth);
+			userAccount.setUsername(administratorForm.getActor().getUserAccount().getUsername());
+			userAccount.setPassword(administratorForm.getActor().getUserAccount().getPassword());
+			administrator.setUserAccount(userAccount);
+			administrator.setIsSuspicious(false);
+			administratorForm.setActor(administrator);
+		} else {
+			final Administrator res = this.administratorRepository.findOne(administrator.getId());
+			res.setName(administrator.getName());
+			res.setMiddleName(administrator.getMiddleName());
+			res.setSurname(administrator.getSurname());
+			res.setPhoto(administrator.getPhoto());
+			res.setEmail(administrator.getEmail());
+			res.setPhoneNumber(administrator.getPhoneNumber());
+			res.setAddress(administrator.getAddress());
+			administratorForm.setActor(res);
 		}
 
-		this.validator.validate(result, binding);
+		result = administratorForm;
 
-		this.administratorRepository.flush();
+		this.validator.validate(result, binding);
 
 		return result;
 	}

@@ -19,22 +19,78 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="activities" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="activity.name" var="name" />
+	<display:column property="name" title="${name}" />
 	
+	<spring:message code="activity.description" var="description" />
+	<display:column property="description" title="${description}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="activity.photo" var="photo" />
+	<display:column title="${photo}">
+	<jstl:if test="${not empty row.photo}">
+		<img src="<jstl:out value='${row.photo}' />"  width="200px" height="200px" />
+	</jstl:if>	
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="activity.rules" var="name" />
+	<display:column property="name" title="${name}" />
+	
+	<spring:message code="activity.deadline" var="deadline" />
+	<display:column title="${deadline}">
+			<fmt:formatDate var="format" value="${row.deadline}" pattern="dd/MM/YYYY HH:mm" />
+			<jstl:out value="${format}" />
+	</display:column>
+	
+	<spring:message code="activity.category" var="category" />
+	<display:column title="${category}">
+	<jstl:if test="${language eq 'en'}">
+		<jstl:out value="${row.category.nameEnglish}" />
+	</jstl:if>
+	<jstl:if test="${language eq 'es'}">
+		<jstl:out value="${row.category.nameSpanish}" />
+	</jstl:if>
+	</display:column>
+	
+	<spring:message code="activity.edit" var="editH" />
+	<display:column title="${editH}" >
+		<jstl:if test="${!row.isFinalMode}">
+			<acme:button url="activity/member/edit.do?activityId=${row.id}" code="button.edit" />
+		</jstl:if>	
+	</display:column>
+	
+	<spring:message code="activity.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<jstl:if test="${!row.isFinalMode}">
+			<acme:button url="activity/member/delete.do?activityId=${row.id}" code="button.delete" />
+		</jstl:if>	
+	</display:column>
+	
+	<spring:message code="activity.changeFinalMode" var="changeFinalModeH" />
+	<display:column title="${changeFinalModeH}" >
+		<jstl:choose>
+			<jstl:when test="${!row.isFinalMode}">
+				<acme:button url="activity/member/change.do?activityId=${row.id}" code="button.change" />
+			</jstl:when>
+			<jstl:when test="${row.isFinalMode}">
+				<spring:message code="activity.isFinalMode" />
+			</jstl:when>
+		</jstl:choose>
+	</display:column>
+	
+	<spring:message code="activity.finish" var="finishH" />
+	<display:column title="${finishH}" >
+		<jstl:choose>
+			<jstl:when test="${row.isFinalMode and !row.isFinished}">
+				<acme:button url="activity/member/finish.do?activityId=${row.id}" code="button.finish" />
+			</jstl:when>
+			<jstl:when test="${row.isFinished}">
+				<spring:message code="activity.isFinished" />
+			</jstl:when>
+		</jstl:choose>
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="activity/member/create.do" code="button.create" />

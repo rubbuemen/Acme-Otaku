@@ -14,7 +14,7 @@
 		<put-attribute name="title" value="Crear buzón" />
 		<put-attribute name="body" value="/views/box/edit.jsp" />
 	</definition>
-
+	
 	<definition name="box/edit" extends="master.page">
 		<put-attribute name="title" value="Editar buzón" />
 		<put-attribute name="body" value="/views/box/edit.jsp" />
@@ -24,6 +24,5 @@
 		<put-attribute name="title" value="Lista de buzones" />
 		<put-attribute name="body" value="/views/box/list.jsp" />
 	</definition>
-
 
 </tiles-definitions>

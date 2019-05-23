@@ -18,15 +18,38 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="activity">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
 	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+	<acme:textbox code="activity.name" path="name" placeholder="Lorem Ipsum"/>
 	<br />
 	
+	<acme:textbox code="activity.description" path="description" placeholder="Lorem Ipsum"/>
+	<br />
+		
+	<acme:textbox code="activity.photo" path="photo" placeholder="http://LoremIpsum.com" type="url" />
+	<br />
+
+	<acme:textarea code="activity.rules" path="rules" placeholder="Lorem ipsum, Lorem ipsum, Lorem ipsum, Lorem ipsum" />
+	<br />
+	
+	<acme:textbox code="activity.deadline" path="deadline" placeholder="dd/MM/yyyy HH:mm"  />
+	<br />
+	
+	<jstl:if test="${language eq 'en'}">
+		<jstl:set var="name" value="nameEnglish" />
+	</jstl:if>
+	<jstl:if test="${language eq 'es'}">
+		<jstl:set var="name" value="nameSpanish" />
+	</jstl:if>
+	
+	<acme:select items="${categories}" itemLabel="${name}" code="activity.category" path="category"/>
+	<br />
+	
+	
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${activity.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
@@ -34,5 +57,5 @@
 		</jstl:otherwise>
 	</jstl:choose>
 	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="activity/member/list.do" code="button.cancel" />
 </form:form>

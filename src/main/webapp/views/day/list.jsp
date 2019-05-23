@@ -19,22 +19,29 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="days" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
-	
-	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="day.date" var="date" />
+	<display:column title="${date}">
+			<fmt:formatDate var="format" value="${row.date}" pattern="dd/MM/YYYY" />
+			<jstl:out value="${format}" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+	<spring:message code="day.price" var="price" />
+	<display:column property="price" title="${price}" />
+	
+	
+	<spring:message code="day.editH" var="editH" />
+	<display:column title="${editH}">
+		<acme:button url="day/member/edit.do?eventId=${event.id}&dayId=${row.id}" code="button.edit" />
+	</display:column>
+	
+	<spring:message code="day.deleteH" var="deleteH" />
+	<display:column title="${deleteH}">
+		<acme:button url="day/member/delete.do?eventId=${event.id}&dayId=${row.id}" code="button.delete" />
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="day/member/create.do?eventId=${event.id}" code="button.create" />
+<acme:button url="event/member/list.do" code="button.back" />

@@ -483,6 +483,15 @@
 				<ref bean="enrolment9" />
 			</list>
 		</property>
+		<property name="boxes">
+			<list>
+				<ref bean="box40" />
+				<ref bean="box41" />
+				<ref bean="box42" />
+				<ref bean="box43" />
+				<ref bean="box44" />
+			</list>
+		</property>
 	</bean>
 
 	<!-- Member -->
@@ -1608,7 +1617,7 @@
 		<property name="representativeColor" value="#5900a3" />
 	</bean>
 	<bean id="association3" class="domain.Association">
-		<property name="name" value="Onyxia" />
+		<property name="name" value="CDO" />
 		<property name="description"
 			value="Asociación Juvenil de Sevilla para hacer cosplay" />
 		<property name="slogan" value="Únete y te divertirás" />
@@ -1627,6 +1636,7 @@
 				<value>http://www.attachment2.com</value>
 			</list>
 		</property>
+		<property name="moment" value="2019/03/12 11:43" />
 		<property name="status" value="ACCEPTED" />
 		<property name="member" ref="member3" />
 		<property name="association" ref="association2" />
@@ -1635,6 +1645,7 @@
 		<property name="skills" value="Bailar KPop" />
 		<property name="reasonToJoin" value="Me gustaría hacer amigos" />
 		<property name="status" value="PENDING" />
+		<property name="moment" value="2019/05/10 19:28" />
 		<property name="member" ref="member5" />
 		<property name="association" ref="association1" />
 	</bean>

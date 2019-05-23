@@ -18,21 +18,27 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="box">
+
 	<form:hidden path="id" />
 	<form:hidden path="version" />
-	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+	<input type="hidden" name="boxParentOld" value="${boxParentOld}" />
+
+	<acme:textbox code="box.name" path="name" placeholder="Lorem Ipsum"/>
 	<br />
 	
+	<acme:select items="${boxes}" itemLabel="name" code="box.parentBox" path="parentBox"/>
+	<br />
+
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
-			<acme:submit name="save" code="button.register" />
+		<jstl:when test="${box.id == 0}">
+			<acme:submit name="save" code="button.create" />
 		</jstl:when>
 		<jstl:otherwise>
 			<acme:submit name="save" code="button.save" />
 		</jstl:otherwise>
 	</jstl:choose>
-	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="box/list.do" code="button.cancel" />
+
 </form:form>
+ 

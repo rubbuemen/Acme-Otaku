@@ -18,15 +18,27 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="association">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
 	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+	<acme:textbox code="association.name" path="name" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<acme:textbox code="association.description" path="description" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<acme:textbox code="association.slogan" path="slogan" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<acme:textbox code="association.logo" path="logo" placeholder="http://Loremipsum.com" type="url" />
+	<br />
+	
+	<acme:textbox code="association.representativeColor" path="representativeColor" placeholder="#FFFFFF" />
 	<br />
 	
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${association.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
@@ -34,5 +46,5 @@
 		</jstl:otherwise>
 	</jstl:choose>
 	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="association/member/show.do" code="button.cancel" />
 </form:form>

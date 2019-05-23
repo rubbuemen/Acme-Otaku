@@ -2,19 +2,20 @@
 package services;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.Validator;
 
 import repositories.ActorRepository;
 import security.Authority;
 import security.LoginService;
 import security.UserAccount;
 import domain.Actor;
+import domain.Box;
 
 @Service
 @Transactional
@@ -22,10 +23,24 @@ public class ActorService {
 
 	// Managed repository
 	@Autowired
-	private ActorRepository	actorRepository;
-
+	private ActorRepository				actorRepository;
 
 	// Supporting services
+	@Autowired
+	private UserAccountService			userAccountService;
+
+	@Autowired
+	private BoxService					boxService;
+
+	@Autowired
+	private SystemConfigurationService	systemConfigurationService;
+
+	@Autowired
+	private MessageService				messageService;
+
+	@Autowired
+	private SocialProfileService		socialProfileService;
+
 
 	// Simple CRUD methods
 	public Collection<Actor> findAll() {
@@ -48,25 +63,72 @@ public class ActorService {
 		return result;
 	}
 
+	// R10.1, R11.2
 	public Actor save(final Actor actor) {
 		Assert.notNull(actor);
 
 		Actor result;
 
-		if (actor.getId() == 0)
-			result = this.actorRepository.save(actor);
-		else
-			result = this.actorRepository.save(actor);
+		Assert.isTrue(actor.getUserAccount().getStatusAccount());
+
+		if (actor.getId() == 0) {
+			final UserAccount userAccount = this.userAccountService.save(actor.getUserAccount());
+			Box inBox = this.boxService.createForSystemBox();
+			inBox.setName("In Box");
+			inBox.setIsSystemBox(true);
+			inBox = this.boxService.saveForSystemBox(inBox);
+			Box outBox = this.boxService.createForSystemBox();
+			outBox.setName("Out Box");
+			outBox.setIsSystemBox(true);
+			outBox = this.boxService.saveForSystemBox(outBox);
+			Box trashBox = this.boxService.createForSystemBox();
+			trashBox.setName("Trash Box");
+			trashBox.setIsSystemBox(true);
+			trashBox = this.boxService.saveForSystemBox(trashBox);
+			Box spamBox = this.boxService.createForSystemBox();
+			spamBox.setName("Spam Box");
+			spamBox.setIsSystemBox(true);
+			spamBox = this.boxService.saveForSystemBox(spamBox);
+			Box notificationBox = this.boxService.createForSystemBox();
+			notificationBox.setName("Notification Box");
+			notificationBox.setIsSystemBox(true);
+			notificationBox = this.boxService.saveForSystemBox(notificationBox);
+			final Collection<Box> systemBoxes = new HashSet<>();
+			Collections.addAll(systemBoxes, inBox, outBox, trashBox, spamBox, notificationBox);
+			actor.setUserAccount(userAccount);
+			actor.setBoxes(systemBoxes);
+		} else {
+			final Actor actorLogged = this.findActorLogged();
+			Assert.notNull(actorLogged);
+			Assert.isTrue(actor.equals(actorLogged));
+		}
+
+		if (actor.getPhoneNumber() != null) {
+			String phoneNumber = actor.getPhoneNumber();
+			final String phoneCountryCode = this.systemConfigurationService.getConfiguration().getPhoneCountryCode();
+			if (!actor.getPhoneNumber().isEmpty() && !actor.getPhoneNumber().startsWith("+"))
+				phoneNumber = phoneCountryCode + " " + phoneNumber;
+			actor.setPhoneNumber(phoneNumber);
+		}
+
+		result = this.actorRepository.save(actor);
 
 		return result;
 	}
 
-	public void delete(final Actor actor) {
+	public void deleteEntities(final Actor actor) {
 		Assert.notNull(actor);
 		Assert.isTrue(actor.getId() != 0);
 		Assert.isTrue(this.actorRepository.exists(actor.getId()));
 
-		this.actorRepository.delete(actor);
+		final Actor actorLogged = this.findActorLogged();
+		Assert.notNull(actorLogged);
+
+		this.boxService.deleteBoxes();
+		this.messageService.deleteActorFromRecipientsMessage();
+		this.messageService.deleteActorFromSenderMessage();
+		this.socialProfileService.deleteSocialProfiles();
+
 	}
 
 	// Other business methods
@@ -136,32 +198,69 @@ public class ActorService {
 		Assert.isTrue(authorities.contains(auth), "The logged actor is not a sponsor");
 	}
 
+	public Actor findActorBySocialProfileId(final int socialProfileId) {
+		Assert.isTrue(socialProfileId != 0);
 
-	// Reconstruct methods
-	@Autowired
-	private Validator	validator;
-
-
-	public Actor reconstruct(final Actor actor, final BindingResult binding) {
 		Actor result;
 
-		if (actor.getId() == 0)
-			result = actor;
-		else {
-			final Actor originalActor = this.actorRepository.findOne(actor.getId());
-			Assert.notNull(originalActor, "This entity does not exist");
-			result = actor;
-		}
+		result = this.actorRepository.findActorBySocialProfileId(socialProfileId);
+		return result;
+	}
 
-		this.validator.validate(result, binding);
+	public Collection<Actor> findAllActorsExceptLogged() {
+		Collection<Actor> result;
 
-		this.actorRepository.flush();
+		final Actor actorLogged = this.findActorLogged();
+		final Actor systemActor = this.actorRepository.getSystemActor();
+		final Actor deletedActor = this.actorRepository.getDeletedActor();
+		result = this.actorRepository.findAll();
+		result.remove(actorLogged);
+		result.remove(systemActor);
+		result.remove(deletedActor);
 
 		return result;
 	}
 
-	public void flush() {
-		this.actorRepository.flush();
+	public Collection<Actor> findActorsToBan() {
+		final Actor actorLogged = this.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.checkUserLoginAdministrator(actorLogged);
+
+		Collection<Actor> result;
+
+		result = this.actorRepository.findActorsToBan();
+		return result;
+	}
+
+	public Collection<Actor> findActorsBanned() {
+		final Actor actorLogged = this.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.checkUserLoginAdministrator(actorLogged);
+
+		Collection<Actor> result;
+
+		result = this.actorRepository.findActorsBanned();
+		return result;
+	}
+
+	public void banActor(final Actor actor) {
+		final Actor actorLogged = this.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.checkUserLoginAdministrator(actorLogged);
+
+		final UserAccount userAccount = actor.getUserAccount();
+		userAccount.setStatusAccount(false);
+		this.userAccountService.save(userAccount);
+	}
+
+	public void unbanActor(final Actor actor) {
+		final Actor actorLogged = this.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.checkUserLoginAdministrator(actorLogged);
+
+		final UserAccount userAccount = actor.getUserAccount();
+		userAccount.setStatusAccount(true);
+		this.userAccountService.save(userAccount);
 	}
 
 }

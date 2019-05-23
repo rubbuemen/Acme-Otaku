@@ -9,6 +9,8 @@ import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -16,6 +18,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.hibernate.validator.constraints.SafeHtml;
@@ -81,8 +85,9 @@ public class Event extends DomainEntity {
 		this.moment = moment;
 	}
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@EachNotBlank
+	@Fetch(FetchMode.SELECT)
 	public Collection<String> getTags() {
 		return this.tags;
 	}
@@ -110,7 +115,8 @@ public class Event extends DomainEntity {
 	@Valid
 	@NotEmpty
 	@EachNotNull
-	@OneToMany
+	@ManyToMany(fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	public Collection<Activity> getActivities() {
 		return this.activities;
 	}
@@ -122,7 +128,8 @@ public class Event extends DomainEntity {
 	@Valid
 	@NotEmpty
 	@EachNotNull
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@Fetch(FetchMode.SELECT)
 	public Collection<Day> getDays() {
 		return this.days;
 	}

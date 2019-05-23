@@ -112,6 +112,7 @@ public class Activity extends DomainEntity {
 	private Collection<Enrolment>	enrolments;
 
 
+	@NotNull
 	@Valid
 	@ManyToOne(optional = false)
 	public Category getCategory() {
