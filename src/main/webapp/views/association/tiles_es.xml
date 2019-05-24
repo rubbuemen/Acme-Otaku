@@ -24,6 +24,11 @@
 		<put-attribute name="title" value="Asociación" />
 		<put-attribute name="body" value="/views/association/show.jsp" />
 	</definition>
+	
+	<definition name="association/leave" extends="master.page">
+		<put-attribute name="title" value="Dejar asociación" />
+		<put-attribute name="body" value="/views/association/leave.jsp" />
+	</definition>
 
 
 </tiles-definitions>

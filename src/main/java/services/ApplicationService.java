@@ -130,6 +130,14 @@ public class ApplicationService {
 		this.applicationRepository.delete(application);
 	}
 
+	public void deleteAuxiliar(final Application application) {
+		Assert.notNull(application);
+		Assert.isTrue(application.getId() != 0);
+		Assert.isTrue(this.applicationRepository.exists(application.getId()));
+
+		this.applicationRepository.delete(application);
+	}
+
 	// Other business methods
 	public Collection<Application> findApplicationsByMemberLogged() {
 		final Actor actorLogged = this.actorService.findActorLogged();

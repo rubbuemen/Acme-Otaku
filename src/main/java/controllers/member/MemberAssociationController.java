@@ -9,6 +9,8 @@
 
 package controllers.member;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,6 +21,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.ActorService;
 import services.AssociationService;
+import services.MemberService;
 import controllers.AbstractController;
 import domain.Actor;
 import domain.Association;
@@ -33,6 +36,9 @@ public class MemberAssociationController extends AbstractController {
 
 	@Autowired
 	ActorService		actorService;
+
+	@Autowired
+	MemberService		memberService;
 
 
 	@RequestMapping(value = "/show", method = RequestMethod.GET)
@@ -91,6 +97,7 @@ public class MemberAssociationController extends AbstractController {
 
 		return result;
 	}
+
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
 	public ModelAndView createOrEdit(Association association, final BindingResult binding) {
 		ModelAndView result;
@@ -111,7 +118,7 @@ public class MemberAssociationController extends AbstractController {
 			else if (oops.getMessage().equals("You already belong to an association"))
 				result = this.createEditModelAndView(association, "association.alreadyBelongs.error");
 			else if (oops.getMessage().equals("This entity does not exist"))
-				result = this.createEditModelAndView(null, "hacking.notExist.error");
+				result = this.createEditModelAndView(association, "hacking.notExist.error");
 			else
 				result = this.createEditModelAndView(association, "commit.error");
 		}
@@ -137,7 +144,7 @@ public class MemberAssociationController extends AbstractController {
 			else if (oops.getMessage().equals("This association already allows members"))
 				result = this.createEditModelAndView(association, "association.allowMembers.error");
 			else if (oops.getMessage().equals("This entity does not exist"))
-				result = this.createEditModelAndView(null, "hacking.notExist.error");
+				result = this.createEditModelAndView(association, "hacking.notExist.error");
 			else
 				result = this.createEditModelAndView(association, "commit.error");
 		}
@@ -163,9 +170,48 @@ public class MemberAssociationController extends AbstractController {
 			else if (oops.getMessage().equals("This association no longer allows members"))
 				result = this.createEditModelAndView(association, "association.notAllowMembers.error");
 			else if (oops.getMessage().equals("This entity does not exist"))
-				result = this.createEditModelAndView(null, "hacking.notExist.error");
+				result = this.createEditModelAndView(association, "hacking.notExist.error");
 			else
 				result = this.createEditModelAndView(association, "commit.error");
+		}
+
+		return result;
+	}
+
+	@RequestMapping(value = "/leave", method = RequestMethod.GET)
+	public ModelAndView leave() {
+		ModelAndView result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		final Member memberLogged = (Member) actorLogged;
+		final Collection<Member> membersAssociation = this.memberService.findMembersByAssociationMemberLogged();
+		membersAssociation.remove(memberLogged);
+
+		result = new ModelAndView("association/leave");
+		result.addObject("members", membersAssociation);
+		result.addObject("role", memberLogged.getRole());
+		result.addObject("actionURL", "association/member/leave.do");
+
+		return result;
+	}
+
+	@RequestMapping(value = "/leave", method = RequestMethod.POST, params = "leave")
+	public ModelAndView leave(@RequestParam(required = false) final Integer memberId) {
+		ModelAndView result;
+		Member member = null;
+
+		try {
+			if (memberId != null)
+				member = this.memberService.findOne(memberId);
+			this.associationService.leave(memberId);
+			result = new ModelAndView("redirect:/association/member/show.do");
+		} catch (final Throwable oops) {
+			if (oops.getMessage().equals("The selected member does not belong to your association"))
+				result = this.createEditModelAndView(member, "association.memberNotBelongs.error");
+			else if (oops.getMessage().equals("This entity does not exist"))
+				result = this.createEditModelAndView(member, "hacking.notExist.error");
+			else
+				result = this.createEditModelAndView(member, "commit.error");
 		}
 
 		return result;
@@ -190,6 +236,35 @@ public class MemberAssociationController extends AbstractController {
 
 		result.addObject("association", association);
 		result.addObject("actionURL", "association/member/edit.do");
+		result.addObject("message", message);
+
+		return result;
+	}
+
+	// Ancillary methods
+	protected ModelAndView createEditModelAndView(final Member member) {
+		ModelAndView result;
+		result = this.createEditModelAndView(member, null);
+		return result;
+	}
+
+	protected ModelAndView createEditModelAndView(final Member member, final String message) {
+		ModelAndView result;
+
+		if (member == null)
+			result = new ModelAndView("redirect:/welcome/index.do");
+		else
+			result = new ModelAndView("association/leave");
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		final Member memberLogged = (Member) actorLogged;
+		final Collection<Member> membersAssociation = this.memberService.findMembersByAssociationMemberLogged();
+		membersAssociation.remove(memberLogged);
+
+		result.addObject("members", membersAssociation);
+		result.addObject("member", member);
+		result.addObject("role", memberLogged.getRole());
+		result.addObject("actionURL", "association/member/leave.do");
 		result.addObject("message", message);
 
 		return result;

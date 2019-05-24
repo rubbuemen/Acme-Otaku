@@ -208,6 +208,36 @@ public class MemberService {
 		return result;
 	}
 
+	public Collection<Member> findMembersByAssociationMemberLogged() {
+		Collection<Member> result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Member memberLogged = (Member) actorLogged;
+
+		result = this.memberRepository.findMembersByAssociationId(memberLogged.getAssociation().getId());
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Member findPresidentByAssociationMemberLogged() {
+		Member result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Member memberLogged = (Member) actorLogged;
+
+		result = this.memberRepository.findMemberPresidentByAssociationId(memberLogged.getAssociation().getId());
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

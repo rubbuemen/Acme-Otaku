@@ -12,10 +12,20 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.AssociationRepository;
+import domain.Activity;
 import domain.Actor;
 import domain.Application;
 import domain.Association;
+import domain.Enrolment;
+import domain.Event;
+import domain.Headquarter;
+import domain.Meeting;
 import domain.Member;
+import domain.Score;
+import domain.Sponsor;
+import domain.Sponsorship;
+import domain.Stand;
+import domain.Visitor;
 
 @Service
 @Transactional
@@ -31,6 +41,39 @@ public class AssociationService {
 
 	@Autowired
 	private ActorService			actorService;
+
+	@Autowired
+	private EventService			eventService;
+
+	@Autowired
+	private ActivityService			activityService;
+
+	@Autowired
+	private MeetingService			meetingService;
+
+	@Autowired
+	private HeadquarterService		headquarterService;
+
+	@Autowired
+	private StandService			standService;
+
+	@Autowired
+	private SponsorshipService		sponsorshipService;
+
+	@Autowired
+	private SponsorService			sponsorService;
+
+	@Autowired
+	private EnrolmentService		enrolmentService;
+
+	@Autowired
+	private VisitorService			visitorService;
+
+	@Autowired
+	private ScoreService			scoreService;
+
+	@Autowired
+	private ApplicationService		applicationService;
 
 
 	// Simple CRUD methods
@@ -230,6 +273,128 @@ public class AssociationService {
 		Assert.notNull(result);
 
 		return result;
+	}
+
+	public Association findAssociationByEnrolmentId(final int enrolmentId) {
+		Assert.isTrue(enrolmentId != 0);
+		Association result;
+
+		result = this.associationRepository.findAssociationByEnrolmentId(enrolmentId);
+
+		return result;
+	}
+
+	//R14.5
+	public void leave(final Integer newPresidentId) {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Member memberLogged = (Member) actorLogged;
+		final Association association = memberLogged.getAssociation();
+
+		final Collection<Member> membersAssociation = this.memberService.findMembersByAssociationMemberLogged();
+		final Collection<Event> events = new HashSet<>(memberLogged.getEvents());
+		final Collection<Activity> activities = new HashSet<>(memberLogged.getActivities());
+		final Collection<Meeting> meetings = new HashSet<>(memberLogged.getMeetings());
+		final Collection<Headquarter> headquarters = new HashSet<>(memberLogged.getHeadquarters());
+		final Collection<Application> applicationsAssociation = new HashSet<>(memberLogged.getAssociation().getApplications());
+
+		if (membersAssociation.size() == 1) {
+			for (final Event e : events) {
+				final Collection<Sponsorship> sponsorships = new HashSet<>(e.getSponsorships());
+				final Collection<Stand> stands = new HashSet<>(this.standService.findStandsByEventId(e.getId()));
+				for (final Sponsorship s : sponsorships) {
+					final Sponsor sp = s.getSponsor();
+					e.getSponsorships().remove(s);
+					sp.getSponsorships().remove(s);
+					this.sponsorshipService.deleteAuxiliar(s);
+					this.sponsorService.saveAuxiliar(sp);
+				}
+				for (final Stand s : stands) {
+					s.getEvents().clear();
+					this.standService.saveAuxiliar(s);
+				}
+				this.eventService.deleteAuxiliar(e);
+			}
+			for (final Activity a : activities) {
+				final Collection<Enrolment> enrolments = new HashSet<>(a.getEnrolments());
+				for (final Enrolment e : enrolments) {
+					final Visitor v = e.getVisitor();
+					a.getEnrolments().remove(e);
+					v.getEnrolments().remove(e);
+					this.enrolmentService.deleteAuxiliar(e);
+					this.visitorService.saveAuxiliar(v);
+				}
+				for (final Score s : a.getScores())
+					this.scoreService.deleteAuxiliar(s);
+				this.activityService.deleteAuxiliar(a);
+			}
+			for (final Meeting m : meetings)
+				this.meetingService.deleteAuxiliar(m);
+			for (final Headquarter h : headquarters)
+				this.headquarterService.deleteAuxiliar(h);
+			for (final Application a : applicationsAssociation) {
+				final Member m = a.getMember();
+				memberLogged.getAssociation().getApplications().remove(a);
+				m.getApplications().remove(a);
+				this.applicationService.deleteAuxiliar(a);
+				this.memberService.saveAuxiliar(m);
+			}
+			memberLogged.setAssociation(null);
+			memberLogged.setRole(null);
+			this.memberService.saveAuxiliar(memberLogged);
+			this.associationRepository.delete(association);
+
+		} else if (memberLogged.getRole().equals("PRESIDENT")) {
+			final Member newPresident = this.memberService.findOne(newPresidentId);
+			Assert.isTrue(newPresident.getAssociation().equals(memberLogged.getAssociation()), "The selected member does not belong to your association");
+			for (final Event e : events) {
+				memberLogged.getEvents().remove(e);
+				newPresident.getEvents().add(e);
+			}
+			for (final Activity e : activities) {
+				memberLogged.getActivities().remove(e);
+				newPresident.getActivities().add(e);
+			}
+			for (final Meeting e : meetings) {
+				memberLogged.getMeetings().remove(e);
+				newPresident.getMeetings().add(e);
+			}
+			for (final Headquarter e : headquarters) {
+				memberLogged.getHeadquarters().remove(e);
+				newPresident.getHeadquarters().add(e);
+			}
+
+			memberLogged.setAssociation(null);
+			memberLogged.setRole(null);
+			newPresident.setRole("PRESIDENT");
+			this.memberService.saveAuxiliar(memberLogged);
+			this.memberService.saveAuxiliar(newPresident);
+		} else {
+			final Member president = this.memberService.findPresidentByAssociationMemberLogged();
+			for (final Event e : events) {
+				memberLogged.getEvents().remove(e);
+				president.getEvents().add(e);
+			}
+			for (final Activity e : activities) {
+				memberLogged.getActivities().remove(e);
+				president.getActivities().add(e);
+			}
+			for (final Meeting e : meetings) {
+				memberLogged.getMeetings().remove(e);
+				president.getMeetings().add(e);
+			}
+			for (final Headquarter e : headquarters) {
+				memberLogged.getHeadquarters().remove(e);
+				president.getHeadquarters().add(e);
+			}
+
+			memberLogged.setAssociation(null);
+			memberLogged.setRole(null);
+			this.memberService.saveAuxiliar(memberLogged);
+			this.memberService.saveAuxiliar(president);
+		}
 	}
 
 

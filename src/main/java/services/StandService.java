@@ -65,6 +65,16 @@ public class StandService {
 		return result;
 	}
 
+	public Stand saveAuxiliar(final Stand stand) {
+		Assert.notNull(stand);
+
+		Stand result;
+
+		result = this.standRepository.save(stand);
+
+		return result;
+	}
+
 	public void delete(final Stand stand) {
 		Assert.notNull(stand);
 		Assert.isTrue(stand.getId() != 0);
@@ -73,8 +83,17 @@ public class StandService {
 		this.standRepository.delete(stand);
 	}
 
-
 	// Other business methods
+	public Collection<Stand> findStandsByEventId(final int eventId) {
+		Assert.isTrue(eventId != 0);
+
+		Collection<Stand> result;
+
+		result = this.standRepository.findStandsByEventId(eventId);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

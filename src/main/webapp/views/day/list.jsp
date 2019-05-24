@@ -30,16 +30,17 @@
 	<spring:message code="day.price" var="price" />
 	<display:column property="price" title="${price}" />
 	
-	
-	<spring:message code="day.editH" var="editH" />
-	<display:column title="${editH}">
-		<acme:button url="day/member/edit.do?eventId=${event.id}&dayId=${row.id}" code="button.edit" />
-	</display:column>
-	
-	<spring:message code="day.deleteH" var="deleteH" />
-	<display:column title="${deleteH}">
-		<acme:button url="day/member/delete.do?eventId=${event.id}&dayId=${row.id}" code="button.delete" />
-	</display:column>
+	<jstl:if test="${!event.isFinalMode}">
+		<spring:message code="day.editH" var="editH" />
+		<display:column title="${editH}">
+			<acme:button url="day/member/edit.do?eventId=${event.id}&dayId=${row.id}" code="button.edit" />
+		</display:column>
+		
+		<spring:message code="day.deleteH" var="deleteH" />
+		<display:column title="${deleteH}">
+			<acme:button url="day/member/delete.do?eventId=${event.id}&dayId=${row.id}" code="button.delete" />
+		</display:column>
+	</jstl:if>
 			
 </display:table>
 

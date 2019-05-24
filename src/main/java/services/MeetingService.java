@@ -11,7 +11,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.MeetingRepository;
+import domain.Actor;
 import domain.Meeting;
+import domain.Member;
 
 @Service
 @Transactional
@@ -21,8 +23,13 @@ public class MeetingService {
 	@Autowired
 	private MeetingRepository	meetingRepository;
 
-
 	// Supporting services
+	@Autowired
+	private ActorService		actorService;
+
+	@Autowired
+	private MemberService		memberService;
+
 
 	// Simple CRUD methods
 	public Meeting create() {
@@ -69,6 +76,23 @@ public class MeetingService {
 		Assert.notNull(meeting);
 		Assert.isTrue(meeting.getId() != 0);
 		Assert.isTrue(this.meetingRepository.exists(meeting.getId()));
+
+		this.meetingRepository.delete(meeting);
+	}
+
+	public void deleteAuxiliar(final Meeting meeting) {
+		Assert.notNull(meeting);
+		Assert.isTrue(meeting.getId() != 0);
+		Assert.isTrue(this.meetingRepository.exists(meeting.getId()));
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		final Member memberLogged = (Member) actorLogged;
+
+		final Collection<Meeting> meetingsActorLogged = memberLogged.getMeetings();
+		meetingsActorLogged.remove(meeting);
+		memberLogged.setMeetings(meetingsActorLogged);
+		this.memberService.saveAuxiliar(memberLogged);
 
 		this.meetingRepository.delete(meeting);
 	}

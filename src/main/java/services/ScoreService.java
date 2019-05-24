@@ -73,6 +73,14 @@ public class ScoreService {
 		this.scoreRepository.delete(score);
 	}
 
+	public void deleteAuxiliar(final Score score) {
+		Assert.notNull(score);
+		Assert.isTrue(score.getId() != 0);
+		Assert.isTrue(this.scoreRepository.exists(score.getId()));
+
+		this.scoreRepository.delete(score);
+	}
+
 
 	// Other business methods
 

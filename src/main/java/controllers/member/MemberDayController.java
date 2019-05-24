@@ -113,6 +113,8 @@ public class MemberDayController extends AbstractController {
 		} catch (final Throwable oops) {
 			if (oops.getMessage().equals("The date of the day must be future"))
 				result = this.createEditModelAndView(day, "day.error.dateNotFuture", event);
+			else if (oops.getMessage().equals("You can only save events that are not in final mode"))
+				result = this.createEditModelAndView(day, "event.error.save.finalMode", event);
 			else if (oops.getMessage().equals("The logged actor is not the owner of this entity"))
 				result = this.createEditModelAndView(day, "hacking.logged.error", event);
 			else if (oops.getMessage().equals("This entity does not exist"))
@@ -142,6 +144,8 @@ public class MemberDayController extends AbstractController {
 				result = this.createEditModelAndView(day, "hacking.logged.error", event);
 			else if (oops.getMessage().equals("The event must be at least one day"))
 				result = this.createEditModelAndView(day, "day.error.oneDay", event);
+			else if (oops.getMessage().equals("You can only delete events that are not in final mode"))
+				result = this.createEditModelAndView(day, "event.error.delete.finalMode", event);
 			else
 				result = this.createEditModelAndView(day, "commit.error", event);
 		}

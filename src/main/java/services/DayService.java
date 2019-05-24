@@ -80,6 +80,8 @@ public class DayService {
 
 		Day result;
 
+		Assert.isTrue(!event.getIsFinalMode(), "You can only save events that are not in final mode");
+
 		final Date currentMoment = new Date(System.currentTimeMillis());
 		if (day.getDate() != null)
 			Assert.isTrue(day.getDate().compareTo(currentMoment) > 0, "The date of the day must be future");
@@ -118,6 +120,8 @@ public class DayService {
 		final Actor actorLogged = this.actorService.findActorLogged();
 		Assert.notNull(actorLogged);
 		this.actorService.checkUserLoginMember(actorLogged);
+
+		Assert.isTrue(!event.getIsFinalMode(), "You can only delete events that are not in final mode");
 
 		final Collection<Day> daysEvent = event.getDays();
 		Assert.isTrue(daysEvent.size() != 1, "The event must be at least one day");

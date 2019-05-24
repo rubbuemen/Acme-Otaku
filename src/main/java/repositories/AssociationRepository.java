@@ -18,4 +18,7 @@ public interface AssociationRepository extends JpaRepository<Association, Intege
 	@Query("select a from Association a where a.isAllowedToJoin = 1")
 	Collection<Association> findAssociationsToJoin();
 
+	@Query("select ass from Member m join m.activities a join m.association ass join a.enrolments e where e.id = ?1")
+	Association findAssociationByEnrolmentId(int enrolmentId);
+
 }

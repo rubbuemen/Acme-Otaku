@@ -19,22 +19,39 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="enrolments" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="enrolment.comments" var="comments" />
+	<display:column property="comments" title="${comments}" />
 	
+	<spring:message code="enrolment.status" var="status" />
+	<display:column property="status" title="${status}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="enrolment.moment" var="moment" />
+	<display:column title="${moment}">
+			<fmt:formatDate var="format" value="${row.moment}" pattern="dd/MM/YYYY HH:mm" />
+			<jstl:out value="${format}" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
-	</display:column>
+	<security:authorize access="hasRole('MEMBER')">
+		<spring:message code="enrolment.decideEnrolment" var="decideEnrolment" />
+		<display:column title="${decideEnrolment}">
+			<jstl:if test="${row.status eq 'PENDING'}">
+				<jstl:choose>
+				<jstl:when test="${row.activity.deadline < currentMoment}">
+					<spring:message code="enrolment.deadlineElapsed" />
+				</jstl:when>
+				<jstl:otherwise>
+					<acme:button url="enrolment/member/accept.do?enrolmentId=${row.id}" code="button.accept" />
+					<acme:button url="enrolment/member/decline.do?enrolmentId=${row.id}" code="button.decline" />
+				</jstl:otherwise>
+				</jstl:choose>	
+			</jstl:if>
 			
+		</display:column>
+	</security:authorize>
+	
 </display:table>
-
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<security:authorize access="hasRole('VISITOR')">
+	<acme:button url="enrolment/visitor/create.do" code="button.create" />
+</security:authorize>

@@ -36,26 +36,37 @@
 		</security:authorize>
 
 		<security:authorize access="hasRole('MEMBER')">
+		<jstl:if test="${role eq 'PRESIDENT'}">
+			<li>
+				<a class="fNiv"><spring:message code="master.page.president" /></a>
+				<ul>
+					<li class="arrow"></li>
+					<jstl:if test="${role eq 'PRESIDENT'}">
+						<li><a href="application/member/listPresident.do"><spring:message code="master.page.applicationsAssociation" /></a></li>
+						<li><a href="member/member/list.do"><spring:message code="master.page.membersAssociation" /></a></li>
+					</jstl:if>
+				</ul>
+			</li>
+		</jstl:if>	
+		</security:authorize>
+		
+		<security:authorize access="hasRole('MEMBER')">
 			<li>
 				<a class="fNiv"><spring:message code="master.page.member" /></a>
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="association/member/show.do"><spring:message code="master.page.association" /></a></li>
 					<li><a href="application/member/list.do"><spring:message code="master.page.applications" /></a></li>
-					<jstl:if test="${role eq 'PRESIDENT'}">
-						<li><a href="application/member/listPresident.do"><spring:message code="master.page.applicationsAssociation" /></a></li>
-						<li><a href="member/member/list.do"><spring:message code="master.page.membersAssociation" /></a></li>
-					</jstl:if>
 					<jstl:if test="${association != null}">
 						<li><a href="event/member/list.do"><spring:message code="master.page.events" /></a></li>
 						<li><a href="activity/member/list.do"><spring:message code="master.page.activities" /></a></li>
+						<li><a href="enrolment/member/list.do"><spring:message code="master.page.enrolments" /></a></li>
 					</jstl:if>
 					
 				</ul>
 			</li>
 		</security:authorize>
-		
-				
+						
 		<security:authorize access="hasRole('VISITOR')">
 			<li>
 				<a class="fNiv"><spring:message code="master.page.visitor" /></a>

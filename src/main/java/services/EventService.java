@@ -168,6 +168,23 @@ public class EventService {
 		this.eventRepository.delete(event);
 	}
 
+	public void deleteAuxiliar(final Event event) {
+		Assert.notNull(event);
+		Assert.isTrue(event.getId() != 0);
+		Assert.isTrue(this.eventRepository.exists(event.getId()));
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		final Member memberLogged = (Member) actorLogged;
+
+		final Collection<Event> eventsActorLogged = memberLogged.getEvents();
+		eventsActorLogged.remove(event);
+		memberLogged.setEvents(eventsActorLogged);
+		this.memberService.saveAuxiliar(memberLogged);
+
+		this.eventRepository.delete(event);
+	}
+
 	// Other business methods
 
 	//R14.1

@@ -137,6 +137,23 @@ public class ActivityService {
 		this.activityRepository.delete(activity);
 	}
 
+	public void deleteAuxiliar(final Activity activity) {
+		Assert.notNull(activity);
+		Assert.isTrue(activity.getId() != 0);
+		Assert.isTrue(this.activityRepository.exists(activity.getId()));
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		final Member memberLogged = (Member) actorLogged;
+
+		final Collection<Activity> activitiesActorLogged = memberLogged.getActivities();
+		activitiesActorLogged.remove(activity);
+		memberLogged.setActivities(activitiesActorLogged);
+		this.memberService.saveAuxiliar(memberLogged);
+
+		this.activityRepository.delete(activity);
+	}
+
 	// Other business methods
 	//R14.2
 	public Collection<Activity> findActivitiesByMemberLogged() {

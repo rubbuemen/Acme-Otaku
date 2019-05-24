@@ -50,6 +50,7 @@
 		<security:intercept-url pattern="/event/member/**" access="hasRole('MEMBER')" />
 		<security:intercept-url pattern="/day/member/**" access="hasRole('MEMBER')" />
 		<security:intercept-url pattern="/activity/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" />
 		
 		<security:intercept-url pattern="/actor/visitor/**" access="hasRole('VISITOR')" />
 

@@ -66,3 +66,6 @@
 <jstl:if test="${memberLogged.association eq null}">
 	<acme:button url="association/member/create.do" code="button.create" />
 </jstl:if>
+<jstl:if test="${memberLogged.association != null}">
+	<acme:button url="association/member/leave.do" code="button.leave" />
+</jstl:if>

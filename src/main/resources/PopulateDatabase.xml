@@ -579,11 +579,15 @@
 		<property name="headquarters">
 			<list>
 				<ref bean="headquarter4" />
+				<ref bean="headquarter5" />
 			</list>
 		</property>
 		<property name="meetings">
 			<list>
 				<ref bean="meeting3" />
+				<ref bean="meeting4" />
+				<ref bean="meeting5" />
+				<ref bean="meeting6" />
 			</list>
 		</property>
 	</bean>
@@ -620,18 +624,6 @@
 			<list>
 				<ref bean="activity8" />
 				<ref bean="activity9" />
-			</list>
-		</property>
-		<property name="headquarters">
-			<list>
-				<ref bean="headquarter5" />
-			</list>
-		</property>
-		<property name="meetings">
-			<list>
-				<ref bean="meeting4" />
-				<ref bean="meeting5" />
-				<ref bean="meeting6" />
 			</list>
 		</property>
 	</bean>
@@ -1614,7 +1606,7 @@
 		<property name="slogan" value="Únete y te divertirás" />
 		<property name="logo" value="http://oi64.tinypic.com/2ztghzr.jpg" />
 		<property name="isAllowedToJoin" value="true" />
-		<property name="representativeColor" value="#5900a3" />
+		<property name="representativeColor" value="#A60000" />
 	</bean>
 	<bean id="association3" class="domain.Association">
 		<property name="name" value="CDO" />
@@ -2023,12 +2015,14 @@
 	<bean id="enrolment1" class="domain.Enrolment">
 		<property name="comments" value="Me gusta esta actividad" />
 		<property name="status" value="PENDING" />
+		<property name="moment" value="2019/02/10 15:20" />
 		<property name="visitor" ref="visitor1" />
 		<property name="activity" ref="activity1" />
 	</bean>
 	<bean id="enrolment2" class="domain.Enrolment">
 		<property name="comments" value="Me gustan las espadas" />
 		<property name="status" value="PENDING" />
+		<property name="moment" value="2019/03/01 12:55" />
 		<property name="visitor" ref="visitor1" />
 		<property name="activity" ref="activity2" />
 	</bean>
@@ -2036,48 +2030,57 @@
 		<property name="comments"
 			value="Me vuelvo a apuntar ya que no pude la anterior vez" />
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/02/28 10:44" />
 		<property name="visitor" ref="visitor2" />
 		<property name="activity" ref="activity2" />
 	</bean>
 	<bean id="enrolment4" class="domain.Enrolment">
 		<property name="status" value="CANCELLED" />
+		<property name="moment" value="2019/01/13 11:33" />
 		<property name="visitor" ref="visitor3" />
 		<property name="activity" ref="activity4" />
 	</bean>
 	<bean id="enrolment5" class="domain.Enrolment">
 		<property name="comments" value="La otra la cancelé" />
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/03/08 19:53" />
 		<property name="visitor" ref="visitor3" />
 		<property name="activity" ref="activity4" />
 	</bean>
 	<bean id="enrolment6" class="domain.Enrolment">
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/01/05 18:21" />
 		<property name="visitor" ref="visitor3" />
 		<property name="activity" ref="activity5" />
 	</bean>
 	<bean id="enrolment7" class="domain.Enrolment">
 		<property name="status" value="DECLINED" />
+		<property name="moment" value="2019/01/19 10:17" />
 		<property name="visitor" ref="visitor4" />
 		<property name="activity" ref="activity6" />
 	</bean>
 	<bean id="enrolment8" class="domain.Enrolment">
 		<property name="comments" value="Me gusta bailar" />
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/03/12 11:50" />
 		<property name="visitor" ref="visitor5" />
 		<property name="activity" ref="activity8" />
 	</bean>
 	<bean id="enrolment9" class="domain.Enrolment">
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/02/16 13:21" />
 		<property name="visitor" ref="visitor5" />
 		<property name="activity" ref="activity9" />
 	</bean>
 	<bean id="enrolment10" class="domain.Enrolment">
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/01/20 16:52" />
 		<property name="visitor" ref="visitor2" />
 		<property name="activity" ref="activity10" />
 	</bean>
 	<bean id="enrolment11" class="domain.Enrolment">
 		<property name="status" value="ACCEPTED" />
+		<property name="moment" value="2019/03/12 18:46" />
 		<property name="visitor" ref="visitor1" />
 		<property name="activity" ref="activity9" />
 	</bean>
