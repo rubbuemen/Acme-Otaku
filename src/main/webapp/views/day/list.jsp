@@ -23,26 +23,36 @@
 
 	<spring:message code="day.date" var="date" />
 	<display:column title="${date}">
-			<fmt:formatDate var="format" value="${row.date}" pattern="dd/MM/YYYY" />
+			<fmt:formatDate var="format" value="${row.date}" pattern="dd/MM/yyyy" />
 			<jstl:out value="${format}" />
 	</display:column>
 	
 	<spring:message code="day.price" var="price" />
 	<display:column property="price" title="${price}" />
 	
-	<jstl:if test="${!event.isFinalMode}">
-		<spring:message code="day.editH" var="editH" />
-		<display:column title="${editH}">
-			<acme:button url="day/member/edit.do?eventId=${event.id}&dayId=${row.id}" code="button.edit" />
-		</display:column>
-		
-		<spring:message code="day.deleteH" var="deleteH" />
-		<display:column title="${deleteH}">
-			<acme:button url="day/member/delete.do?eventId=${event.id}&dayId=${row.id}" code="button.delete" />
-		</display:column>
-	</jstl:if>
+	<security:authorize access="hasRole('MEMBER')">
+		<jstl:if test="${!event.isFinalMode}">
+			<spring:message code="day.editH" var="editH" />
+			<display:column title="${editH}">
+				<acme:button url="day/member/edit.do?eventId=${event.id}&dayId=${row.id}" code="button.edit" />
+			</display:column>
+			
+			<spring:message code="day.deleteH" var="deleteH" />
+			<display:column title="${deleteH}">
+				<acme:button url="day/member/delete.do?eventId=${event.id}&dayId=${row.id}" code="button.delete" />
+			</display:column>
+		</jstl:if>
+	</security:authorize>
 			
 </display:table>
 
-<acme:button url="day/member/create.do?eventId=${event.id}" code="button.create" />
-<acme:button url="event/member/list.do" code="button.back" />
+<security:authorize access="hasRole('MEMBER')">
+	<jstl:if test="${!event.isFinalMode}">
+		<acme:button url="day/member/create.do?eventId=${event.id}" code="button.create" />
+	</jstl:if>
+	<acme:button url="event/member/list.do" code="button.back" />
+</security:authorize>
+
+<security:authorize access="hasRole('VISITOR')">
+	<acme:button url="event/visitor/list.do" code="button.back" />
+</security:authorize>

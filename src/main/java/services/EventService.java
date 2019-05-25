@@ -186,7 +186,6 @@ public class EventService {
 	}
 
 	// Other business methods
-
 	//R14.1
 	public Collection<Event> findEventsByMemberLogged() {
 		final Actor actorLogged = this.actorService.findActorLogged();
@@ -240,6 +239,20 @@ public class EventService {
 		Event result;
 
 		result = this.eventRepository.findOne(eventId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	//R15.1
+	public Collection<Event> findEventsFinalModeNotFinished() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
+		Collection<Event> result;
+
+		result = this.eventRepository.findEventsFinalModeNotFinished();
 		Assert.notNull(result);
 
 		return result;

@@ -39,7 +39,7 @@
 	
 	<spring:message code="activity.deadline" var="deadline" />
 	<display:column title="${deadline}">
-			<fmt:formatDate var="format" value="${row.deadline}" pattern="dd/MM/YYYY HH:mm" />
+			<fmt:formatDate var="format" value="${row.deadline}" pattern="dd/MM/yyyy HH:mm" />
 			<jstl:out value="${format}" />
 	</display:column>
 	
@@ -53,44 +53,52 @@
 	</jstl:if>
 	</display:column>
 	
-	<spring:message code="activity.edit" var="editH" />
-	<display:column title="${editH}" >
-		<jstl:if test="${!row.isFinalMode}">
-			<acme:button url="activity/member/edit.do?activityId=${row.id}" code="button.edit" />
-		</jstl:if>	
-	</display:column>
-	
-	<spring:message code="activity.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<jstl:if test="${!row.isFinalMode}">
-			<acme:button url="activity/member/delete.do?activityId=${row.id}" code="button.delete" />
-		</jstl:if>	
-	</display:column>
-	
-	<spring:message code="activity.changeFinalMode" var="changeFinalModeH" />
-	<display:column title="${changeFinalModeH}" >
-		<jstl:choose>
-			<jstl:when test="${!row.isFinalMode}">
-				<acme:button url="activity/member/change.do?activityId=${row.id}" code="button.change" />
-			</jstl:when>
-			<jstl:when test="${row.isFinalMode}">
-				<spring:message code="activity.isFinalMode" />
-			</jstl:when>
-		</jstl:choose>
-	</display:column>
-	
-	<spring:message code="activity.finish" var="finishH" />
-	<display:column title="${finishH}" >
-		<jstl:choose>
-			<jstl:when test="${row.isFinalMode and !row.isFinished}">
-				<acme:button url="activity/member/finish.do?activityId=${row.id}" code="button.finish" />
-			</jstl:when>
-			<jstl:when test="${row.isFinished}">
-				<spring:message code="activity.isFinished" />
-			</jstl:when>
-		</jstl:choose>
-	</display:column>
+	<security:authorize access="hasRole('MEMBER')">
+		<spring:message code="activity.edit" var="editH" />
+		<display:column title="${editH}" >
+			<jstl:if test="${!row.isFinalMode}">
+				<acme:button url="activity/member/edit.do?activityId=${row.id}" code="button.edit" />
+			</jstl:if>	
+		</display:column>
+		
+		<spring:message code="activity.delete" var="deleteH" />
+		<display:column title="${deleteH}" >
+			<jstl:if test="${!row.isFinalMode}">
+				<acme:button url="activity/member/delete.do?activityId=${row.id}" code="button.delete" />
+			</jstl:if>	
+		</display:column>
+		
+		<spring:message code="activity.changeFinalMode" var="changeFinalModeH" />
+		<display:column title="${changeFinalModeH}" >
+			<jstl:choose>
+				<jstl:when test="${!row.isFinalMode}">
+					<acme:button url="activity/member/change.do?activityId=${row.id}" code="button.change" />
+				</jstl:when>
+				<jstl:when test="${row.isFinalMode}">
+					<spring:message code="activity.isFinalMode" />
+				</jstl:when>
+			</jstl:choose>
+		</display:column>
+		
+		<spring:message code="activity.finish" var="finishH" />
+		<display:column title="${finishH}" >
+			<jstl:choose>
+				<jstl:when test="${row.isFinalMode and !row.isFinished}">
+					<acme:button url="activity/member/finish.do?activityId=${row.id}" code="button.finish" />
+				</jstl:when>
+				<jstl:when test="${row.isFinished}">
+					<spring:message code="activity.isFinished" />
+				</jstl:when>
+			</jstl:choose>
+		</display:column>
+	</security:authorize>
 			
 </display:table>
 
-<acme:button url="activity/member/create.do" code="button.create" />
+<security:authorize access="hasRole('MEMBER')">
+	<acme:button url="activity/member/create.do" code="button.create" />
+</security:authorize>
+
+<security:authorize access="hasRole('VISITOR')">
+	<acme:button url="event/visitor/list.do" code="button.back" />
+</security:authorize>

@@ -254,6 +254,20 @@ public class ActivityService {
 		return result;
 	}
 
+	//R15.1
+	public Collection<Activity> findActivitiesFinalModeNotFinishedByEventId(final int eventId) {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
+		Collection<Activity> result;
+
+		result = this.activityRepository.findActivitiesFinalModeNotFinishedByEventId(eventId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

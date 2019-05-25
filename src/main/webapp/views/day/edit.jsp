@@ -23,7 +23,11 @@
 	<form:hidden path="version" />
 	<input type="hidden" name="eventId" value="${event.id}">
 	
-	<acme:textbox code="day.date" path="date" placeholder="dd/MM/yyyy" />
+	<jstl:if test="${day.id == 0}">
+		<jstl:set var="read" value="true"/>
+	</jstl:if>
+	
+	<acme:textbox code="day.date" path="date" placeholder="dd/MM/yyyy" value="${lastDate}" readonly="${read}"/>
 	<br />
 			
 	<acme:textbox code="day.price" path="price" placeholder="0.00" type="number" min="0" step="0.01" />

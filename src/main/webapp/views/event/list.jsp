@@ -32,44 +32,58 @@
 	
 	<spring:message code="event.moment" var="moment" />
 	<display:column title="${moment}">
-			<fmt:formatDate var="format" value="${row.moment}" pattern="dd/MM/YYYY HH:mm" />
+			<fmt:formatDate var="format" value="${row.moment}" pattern="dd/MM/yyyy HH:mm" />
 			<jstl:out value="${format}" />
 	</display:column>
 	
 	<spring:message code="event.tags" var="tags" />
 	<display:column property="tags" title="${tags}" />
 	
-	<spring:message code="event.days" var="daysH" />
+	<security:authorize access="hasRole('MEMBER')">
+		<spring:message code="event.days" var="daysH" />
 		<display:column title="${daysH}" >
 			<acme:button url="day/member/list.do?eventId=${row.id}" code="button.show" />
 		</display:column>
 	
-	<spring:message code="event.edit" var="editH" />
-	<display:column title="${editH}" >
-		<jstl:if test="${!row.isFinalMode}">
-			<acme:button url="event/member/edit.do?eventId=${row.id}" code="button.edit" />
-		</jstl:if>	
-	</display:column>
-	
-	<spring:message code="event.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<jstl:if test="${!row.isFinalMode}">
-			<acme:button url="event/member/delete.do?eventId=${row.id}" code="button.delete" />
-		</jstl:if>	
-	</display:column>
-	
-	<spring:message code="event.changeFinalMode" var="changeFinalModeH" />
-	<display:column title="${changeFinalModeH}" >
-		<jstl:choose>
-			<jstl:when test="${!row.isFinalMode}">
-				<acme:button url="event/member/change.do?eventId=${row.id}" code="button.change" />
-			</jstl:when>
-			<jstl:when test="${row.isFinalMode}">
-				<spring:message code="event.isFinalMode" />
-			</jstl:when>
-		</jstl:choose>
-	</display:column>
+		<spring:message code="event.edit" var="editH" />
+		<display:column title="${editH}" >
+			<jstl:if test="${!row.isFinalMode}">
+				<acme:button url="event/member/edit.do?eventId=${row.id}" code="button.edit" />
+			</jstl:if>	
+		</display:column>
+		
+		<spring:message code="event.delete" var="deleteH" />
+		<display:column title="${deleteH}" >
+			<jstl:if test="${!row.isFinalMode}">
+				<acme:button url="event/member/delete.do?eventId=${row.id}" code="button.delete" />
+			</jstl:if>	
+		</display:column>
+		
+		<spring:message code="event.changeFinalMode" var="changeFinalModeH" />
+		<display:column title="${changeFinalModeH}" >
+			<jstl:choose>
+				<jstl:when test="${!row.isFinalMode}">
+					<acme:button url="event/member/change.do?eventId=${row.id}" code="button.change" />
+				</jstl:when>
+				<jstl:when test="${row.isFinalMode}">
+					<spring:message code="event.isFinalMode" />
+				</jstl:when>
+			</jstl:choose>
+		</display:column>
+	</security:authorize>
+	<security:authorize access="hasRole('VISITOR')">
+		<spring:message code="event.days" var="daysH" />
+		<display:column title="${daysH}" >
+			<acme:button url="day/visitor/list.do?eventId=${row.id}" code="button.show" />
+		</display:column>
+		<spring:message code="event.activities" var="activitiesH" />
+		<display:column title="${activitiesH}" >
+			<acme:button url="activity/visitor/list.do?eventId=${row.id}" code="button.show" />
+		</display:column>
+	</security:authorize>
 			
 </display:table>
 
-<acme:button url="event/member/create.do" code="button.create" />
+<security:authorize access="hasRole('MEMBER')">
+	<acme:button url="event/member/create.do" code="button.create" />
+</security:authorize>

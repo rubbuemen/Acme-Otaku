@@ -18,7 +18,7 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="association">
+<form:form action="${actionURL}" modelAttribute="associatio">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
 	

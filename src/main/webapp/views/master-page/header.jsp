@@ -72,7 +72,7 @@
 				<a class="fNiv"><spring:message code="master.page.visitor" /></a>
 				<ul>
 					<li class="arrow"></li>
-					<%-- <li><a href="position/visitor/list.do"><spring:message code="master.page.positions" /></a></li> --%>
+					<li><a href="event/visitor/list.do"><spring:message code="master.page.events" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>

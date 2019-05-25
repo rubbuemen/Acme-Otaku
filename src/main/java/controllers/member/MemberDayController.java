@@ -9,7 +9,11 @@
 
 package controllers.member;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -43,7 +47,7 @@ public class MemberDayController extends AbstractController {
 		final Event event = this.eventService.findOne(eventId);
 
 		try {
-			days = this.dayService.findDaysByEvent(eventId);
+			days = this.dayService.findDaysByEventMemberLogged(eventId);
 			result = new ModelAndView("day/list");
 			result.addObject("days", days);
 			result.addObject("requestURI", "day/member/list.do");
@@ -64,7 +68,7 @@ public class MemberDayController extends AbstractController {
 		Day day;
 
 		final Event event = this.eventService.findOne(eventId);
-		final Collection<Day> days = this.dayService.findDaysByEvent(eventId);
+		final Collection<Day> days = this.dayService.findDaysByEventMemberLogged(eventId);
 		day = this.dayService.create();
 
 		result = this.createEditModelAndView(day, event);
@@ -80,7 +84,7 @@ public class MemberDayController extends AbstractController {
 		final Event event = this.eventService.findOne(eventId);
 
 		try {
-			this.dayService.findDaysByEvent(eventId);
+			this.dayService.findDaysByEventMemberLogged(eventId);
 			day = this.dayService.findOne(dayId);
 			result = this.createEditModelAndView(day, event);
 		} catch (final Throwable oops) {
@@ -101,8 +105,8 @@ public class MemberDayController extends AbstractController {
 
 		try {
 			day = this.dayService.reconstruct(day, binding);
-			this.dayService.findDaysByEvent(eventId);
-			final Collection<Day> days = this.dayService.findDaysByEvent(eventId);
+			this.dayService.findDaysByEventMemberLogged(eventId);
+			final Collection<Day> days = this.dayService.findDaysByEventMemberLogged(eventId);
 			if (binding.hasErrors())
 				result = this.createEditModelAndView(day, event);
 			else {
@@ -115,6 +119,10 @@ public class MemberDayController extends AbstractController {
 				result = this.createEditModelAndView(day, "day.error.dateNotFuture", event);
 			else if (oops.getMessage().equals("You can only save events that are not in final mode"))
 				result = this.createEditModelAndView(day, "event.error.save.finalMode", event);
+			else if (oops.getMessage().equals("The current day's date must be before than the next day's date"))
+				result = this.createEditModelAndView(day, "day.error.save.dayBefore", event);
+			else if (oops.getMessage().equals("The current day's date must be after than the previous day's date"))
+				result = this.createEditModelAndView(day, "day.error.save.dayAfter", event);
 			else if (oops.getMessage().equals("The logged actor is not the owner of this entity"))
 				result = this.createEditModelAndView(day, "hacking.logged.error", event);
 			else if (oops.getMessage().equals("This entity does not exist"))
@@ -131,7 +139,7 @@ public class MemberDayController extends AbstractController {
 		ModelAndView result;
 
 		final Event event = this.eventService.findOne(eventId);
-		this.dayService.findDaysByEvent(eventId);
+		this.dayService.findDaysByEventMemberLogged(eventId);
 		final Day day = this.dayService.findOne(dayId);
 
 		try {
@@ -165,9 +173,16 @@ public class MemberDayController extends AbstractController {
 
 		if (day == null)
 			result = new ModelAndView("redirect:/welcome/index.do");
-		else if (day.getId() == 0)
+		else if (day.getId() == 0) {
 			result = new ModelAndView("day/create");
-		else
+			final List<Day> days = new ArrayList<>(event.getDays());
+			final Day lastDay = days.get(days.size() - 1);
+			final SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yyyy");
+			final Calendar cal = Calendar.getInstance();
+			cal.setTime(lastDay.getDate());
+			cal.add(Calendar.DATE, 1);
+			result.addObject("lastDate", formatDate.format(cal.getTime()));
+		} else
 			result = new ModelAndView("day/edit");
 
 		result.addObject("event", event);
@@ -177,5 +192,4 @@ public class MemberDayController extends AbstractController {
 
 		return result;
 	}
-
 }

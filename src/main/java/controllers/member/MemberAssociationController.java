@@ -13,7 +13,9 @@ import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -61,12 +63,13 @@ public class MemberAssociationController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/create", method = RequestMethod.GET)
-	public ModelAndView create() {
+	public ModelAndView create(final Model model) {
 		ModelAndView result;
 		Association association = null;
 
 		try {
 			association = this.associationService.create();
+			model.addAttribute("associatio", association);
 			result = this.createEditModelAndView(association);
 		} catch (final Throwable oops) {
 			if (oops.getMessage().equals("You already belong to an association"))
@@ -79,12 +82,13 @@ public class MemberAssociationController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.GET)
-	public ModelAndView edit(@RequestParam final int associationId) {
+	public ModelAndView edit(@RequestParam final int associationId, final Model model) {
 		ModelAndView result;
 		Association association = null;
 
 		try {
 			association = this.associationService.findAssociationMemberLogged(associationId);
+			model.addAttribute("associatio", association);
 			result = this.createEditModelAndView(association);
 		} catch (final Throwable oops) {
 			if (oops.getMessage().equals("You have to be the president of the association in order to edit it"))
@@ -99,7 +103,7 @@ public class MemberAssociationController extends AbstractController {
 	}
 
 	@RequestMapping(value = "/edit", method = RequestMethod.POST, params = "save")
-	public ModelAndView createOrEdit(Association association, final BindingResult binding) {
+	public ModelAndView createOrEdit(@ModelAttribute("associatio") Association association, final BindingResult binding) {
 		ModelAndView result;
 
 		try {
