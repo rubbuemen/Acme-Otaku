@@ -112,6 +112,7 @@ public class ApplicationService {
 
 		return result;
 	}
+
 	public Application saveAuxiliar(final Application application) {
 		Assert.notNull(application);
 

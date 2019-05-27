@@ -19,22 +19,41 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="sponsorships" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="sponsorship.banner" var="banner" />
+	<display:column title="${banner}" >
+		<img src="<jstl:out value="${row.banner}"/>" width="300px" height="100px" />
+	</display:column>
 	
+	<spring:message code="sponsorship.targetURL" var="targetURL" />
+	<display:column title="${targetURL}" >
+		<a href="<jstl:out value="${row.targetURL}"/>">${row.targetURL}</a>
+	</display:column>
 	
-	<spring:message code="entidad.edit" var="editH" />
+	<spring:message code="sponsorship.creditCard" var="creditCard" />
+	<display:column title="${creditCard}">
+			<spring:message code="creditCard.holder" />: ${row.creditCard.holder}<br />
+			<spring:message code="creditCard.make" />: ${row.creditCard.make}<br />
+			<spring:message code="creditCard.number" />: ${row.creditCard.number}<br />
+			<spring:message code="creditCard.expirationMonth" />: ${row.creditCard.expirationMonth}<br />
+			<spring:message code="creditCard.expirationYear" />: ${row.creditCard.expirationYear}<br />
+			<spring:message code="creditCard.cvv" />: ${row.creditCard.cvv}
+	</display:column>
+	
+	<spring:message code="sponsorship.event" var="event" />
+	<display:column property="event.name" title="${event}" />
+	
+	<spring:message code="sponsorship.edit" var="editH" />
 	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+		<acme:button url="sponsorship/sponsor/edit.do?sponsorshipId=${row.id}" code="button.edit" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="sponsorship.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<acme:button url="sponsorship/sponsor/delete.do?sponsorshipId=${row.id}" code="button.delete" />
 	</display:column>
-			
+		
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="sponsorship/sponsor/create.do" code="button.create" />

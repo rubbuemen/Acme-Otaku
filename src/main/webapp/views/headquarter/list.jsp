@@ -19,22 +19,26 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="headquarters" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="headquarter.name" var="name" />
+	<display:column property="name" title="${name}" />
 	
+	<spring:message code="headquarter.address" var="address" />
+	<display:column property="address" title="${address}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
+	<spring:message code="headquarter.photos" var="photos" />
+	<display:column title="${photos}" >
+	<jstl:forEach items="${row.photos}" var="photo">
+		<img src="<jstl:out value="${photo}"/>" width="200px" height="200px" />
+	</jstl:forEach>
+	</display:column>
+	
+	<spring:message code="headquarter.edit" var="editH" />
 	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+		<acme:button url="headquarter/member/edit.do?headquarterId=${row.id}" code="button.edit" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
-	</display:column>
-			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="headquarter/member/create.do" code="button.create" />

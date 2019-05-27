@@ -27,4 +27,10 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 	@Query("select m from Member m join m.activities a where a.id = ?1")
 	Member findMemberByActivityId(int activityId);
 
+	@Query("select m from Member m join m.meetings me where me.id = ?1")
+	Member findMemberByMeetingId(int meetingId);
+
+	@Query("select m from Member m join m.headquarters h where h.id = ?1")
+	Member findMemberByHeadquarterId(int headquarterId);
+
 }

@@ -19,22 +19,37 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="products" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="product.name" var="name" />
+	<display:column property="name" title="${name}" />
 	
+	<spring:message code="product.description" var="description" />
+	<display:column property="description" title="${description}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="product.price" var="price" />
+	<display:column title="${price}">
+			<fmt:formatNumber var="priceVat" type="number" maxFractionDigits="2" value="${row.price + row.price * (vatPercentage / 100)}"/>
+			<jstl:set var="priceVat" value="${priceVat} (${vatPercentage} %)"/>
+			<jstl:out value="${priceVat}" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="product.photo" var="photo" />
+	<display:column title="${photo}">
+		<img src="<jstl:out value='${row.photo}' />"  width="200px" height="200px" />
+	</display:column>
+	
+	<spring:message code="product.edit" var="editH" />
+	<display:column title="${editH}" >
+		<acme:button url="product/seller/edit.do?standId=${stand.id}&productId=${row.id}" code="button.edit" />
+	</display:column>
+	
+	<spring:message code="product.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<acme:button url="product/seller/delete.do?standId=${stand.id}&productId=${row.id}" code="button.delete" />	
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="product/seller/create.do?standId=${stand.id}&" code="button.create" />
+<acme:button url="stand/listGeneric.do" code="button.back" />

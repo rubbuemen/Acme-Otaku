@@ -18,21 +18,25 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="category">
+
 	<form:hidden path="id" />
 	<form:hidden path="version" />
-	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+
+	<acme:textbox code="category.nameEnglish" path="nameEnglish" placeholder="Lorem Ipsum"/>
 	<br />
-	
+
+	<acme:textbox code="category.nameSpanish" path="nameSpanish" placeholder="Lorem Ipsum"/>
+	<br />
+
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${category.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
 			<acme:submit name="save" code="button.save" />
 		</jstl:otherwise>
 	</jstl:choose>
-	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="category/administrator/list.do" code="button.cancel" />
+
 </form:form>

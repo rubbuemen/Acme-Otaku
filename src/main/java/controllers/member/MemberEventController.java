@@ -11,7 +11,9 @@ package controllers.member;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -28,28 +30,33 @@ import services.ActivityService;
 import services.ActorService;
 import services.DayService;
 import services.EventService;
+import services.SponsorshipService;
 import controllers.AbstractController;
 import domain.Activity;
 import domain.Actor;
 import domain.Day;
 import domain.Event;
 import domain.Member;
+import domain.Sponsorship;
 
 @Controller
 @RequestMapping("/event/member")
 public class MemberEventController extends AbstractController {
 
 	@Autowired
-	EventService	eventService;
+	EventService		eventService;
 
 	@Autowired
-	DayService		dayService;
+	DayService			dayService;
 
 	@Autowired
-	ActivityService	activityService;
+	ActivityService		activityService;
 
 	@Autowired
-	ActorService	actorService;
+	ActorService		actorService;
+
+	@Autowired
+	SponsorshipService	sponsorshipService;
 
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -61,6 +68,15 @@ public class MemberEventController extends AbstractController {
 		try {
 			events = this.eventService.findEventsByMemberLogged();
 			result = this.createEditModelAndView(events, day);
+			if (!events.isEmpty()) {
+				final Map<Event, Sponsorship> randomSponsorship = new HashMap<>();
+				for (final Event e : events) {
+					final Sponsorship sponsorship = this.sponsorshipService.findRandomSponsorship(e.getId());
+					if (sponsorship != null)
+						randomSponsorship.put(e, sponsorship);
+				}
+				result.addObject("randomSponsorship", randomSponsorship);
+			}
 		} catch (final Throwable oops) {
 			if (oops.getMessage().equals("You need to belong to an association to manage events"))
 				result = this.createEditModelAndView(events, "event.notBelongs.error", null);
@@ -256,6 +272,16 @@ public class MemberEventController extends AbstractController {
 			result = new ModelAndView("redirect:/welcome/index.do");
 		else
 			result = new ModelAndView("event/list");
+
+		if (!events.isEmpty()) {
+			final Map<Event, Sponsorship> randomSponsorship = new HashMap<>();
+			for (final Event e : events) {
+				final Sponsorship sponsorship = this.sponsorshipService.findRandomSponsorship(e.getId());
+				if (sponsorship != null)
+					randomSponsorship.put(e, sponsorship);
+			}
+			result.addObject("randomSponsorship", randomSponsorship);
+		}
 
 		result.addObject("events", events);
 		result.addObject("day", day);

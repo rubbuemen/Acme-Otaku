@@ -19,6 +19,17 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
+<security:authorize access="hasRole('VISITOR')">
+	<form name="singleKeyWord" id="singleKeyWord" action="event/visitor/list.do" method="POST" >
+		<spring:message code="event.searchBySingleKeyWord" />: 
+		<input type="text" name="singleKeyWord" required>
+			
+		<spring:message code="button.search" var="search" />
+		<input type="submit" name="search" value="${search}" />
+	</form>
+	<br />
+</security:authorize>
+
 <display:table pagesize="5" class="displaytag" name="events" requestURI="${requestURI}" id="row">
 
 	<spring:message code="event.name" var="name" />
@@ -81,6 +92,21 @@
 			<acme:button url="activity/visitor/list.do?eventId=${row.id}" code="button.show" />
 		</display:column>
 	</security:authorize>
+	
+	<security:authorize access="hasRole('SELLER')">
+		<spring:message code="event.days" var="daysH" />
+		<display:column title="${daysH}" >
+			<acme:button url="day/seller/list.do?eventId=${row.id}" code="button.show" />
+		</display:column>
+	</security:authorize>
+	
+	<spring:message code="event.sponsorship" var="sponsorship" />
+	<display:column title="${sponsorship}" >
+		<jstl:if test="${randomSponsorship.containsKey(row)}">
+			<jstl:set var="banner" value="${randomSponsorship.get(row).banner}"/>
+			<img src="<jstl:out value='${banner}'/>" width="200px" height="100px" />
+		</jstl:if>
+	</display:column>
 			
 </display:table>
 

@@ -24,6 +24,11 @@
 		<put-attribute name="title" value="Lista de reportes" />
 		<put-attribute name="body" value="/views/report/list.jsp" />
 	</definition>
+	
+	<definition name="report/listGeneric" extends="master.page">
+		<put-attribute name="title" value="Lista de reportes" />
+		<put-attribute name="body" value="/views/report/listGeneric.jsp" />
+	</definition>
 
 
 </tiles-definitions>

@@ -18,21 +18,59 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="sponsorship">
+
 	<form:hidden path="id" />
 	<form:hidden path="version" />
-	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+
+	<acme:textbox code="sponsorship.banner" path="banner" placeholder="http://LoremIpsum.com" type="url" />
+	<jstl:if test="${not empty sponsorship.banner}">
+		<br />
+		<img src="<jstl:out value='${sponsorship.banner}' />" />
+		<br />
+	</jstl:if>
 	<br />
 	
+	<acme:textbox code="sponsorship.targetURL" path="targetURL" placeholder="http://LoremIpsum.com" type="url" />
+	<br />
+
+	<fieldset>
+		<legend>
+			<spring:message code="sponsorship.creditCard" />
+		</legend>
+		<acme:textbox code="creditCard.holder" path="creditCard.holder"	placeholder="Lorem Ipsum" />
+		<br />
+
+		<acme:selectString items="${creditCardMakes}" itemLabel="creditCard.make" code="creditCard.make" path="creditCard.make"/>
+		<br />
+		
+		<acme:textbox code="creditCard.number" path="creditCard.number"	placeholder="NNNNNNNNNNNNNNNN" />
+		<br />
+		
+		<acme:textbox code="creditCard.expirationMonth" path="creditCard.expirationMonth" placeholder="MM" type="number" min="1" max="12" />
+		<br />
+		
+		<acme:textbox code="creditCard.expirationYear" path="creditCard.expirationYear" placeholder="YY" type="number" min="0" max="99" />
+		<br />
+		
+		<acme:textbox code="creditCard.cvv" path="creditCard.cvv" placeholder="NNN" type="number" min="100" max="999" />
+		<br />
+	</fieldset>
+	<br />
+	
+	<jstl:if test="${sponsorship.id == 0}">
+		<acme:select items="${events}" itemLabel="name" code="sponsorship.event" path="event"/>
+		<br />
+	</jstl:if>
+	
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${sponsorship.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
 			<acme:submit name="save" code="button.save" />
 		</jstl:otherwise>
 	</jstl:choose>
-	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="sponsorship/sponsor/list.do" code="button.cancel" />
+
 </form:form>

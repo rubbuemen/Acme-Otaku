@@ -19,22 +19,68 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
-
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+<h3><spring:message code="actor.actorsToBan" /></h3>
+<display:table pagesize="5" class="displaytag" name="actorsToBan" id="row1">
 	
+	<spring:message code="actor.name" var="nameH" />
+	<display:column property="name" title="${nameH}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="actor.surname" var="surnameH" />
+	<display:column property="surname" title="${surnameH}" />
+	
+	<spring:message code="actor.email" var="emailH" />
+	<display:column property="email" title="${emailH}" />
+	
+	<spring:message code="actor.username" var="usernameH" />
+	<display:column property="userAccount.username" title="${usernameH}" />
+	
+	<spring:message code="actor.isSuspicious" var="isSuspiciousH" />
+	<display:column title="${isSuspiciousH}">
+		<jstl:if test="${row1.isSuspicious == true}">
+			<spring:message code="actor.yes" var="yes"/>
+			<jstl:out value="${yes}" />
+		</jstl:if>
+		<jstl:if test="${row1.isSuspicious == false}">
+		<spring:message code="actor.no" var="no"/>
+			<jstl:out value="${no}" />
+		</jstl:if>
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+	<spring:message code="actor.ban" var="ban" />
+	<display:column title="${ban}">
+			<acme:button url="systemConfiguration/administrator/ban.do?actorId=${row1.id}" code="button.ban" />
 	</display:column>
-			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<h3><spring:message code="actor.actorsBanned" /></h3>
+<display:table pagesize="5" class="displaytag" name="actorsBanned" id="row2">
+	
+	<spring:message code="actor.name" var="nameH" />
+	<display:column property="name" title="${nameH}" />
+	
+	<spring:message code="actor.surname" var="surnameH" />
+	<display:column property="surname" title="${surnameH}" />
+	
+	<spring:message code="actor.email" var="emailH" />
+	<display:column property="email" title="${emailH}" />
+	
+	<spring:message code="actor.username" var="usernameH" />
+	<display:column property="userAccount.username" title="${usernameH}" />
+	
+	<spring:message code="actor.isSuspicious" var="isSuspiciousH" />
+	<display:column title="${isSuspiciousH}">
+		<jstl:if test="${row2.isSuspicious == true}">
+			<spring:message code="actor.yes" var="yes"/>
+			<jstl:out value="${yes}" />
+		</jstl:if>
+		<jstl:if test="${row2.isSuspicious == false}">
+		<spring:message code="actor.no" var="no"/>
+			<jstl:out value="${no}" />
+		</jstl:if>
+	</display:column>
+	
+	<spring:message code="actor.ban" var="ban" />
+	<display:column title="${ban}">
+			<acme:button url="systemConfiguration/administrator/unban.do?actorId=${row2.id}" code="button.unban" />
+	</display:column>
+</display:table>

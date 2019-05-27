@@ -263,4 +263,25 @@ public class ActorService {
 		this.userAccountService.save(userAccount);
 	}
 
+	public StringBuilder exportData() {
+		final Actor actorLogged = this.findActorLogged();
+
+		final StringBuilder sb = new StringBuilder();
+		sb.append(actorLogged.getName());
+		sb.append(';');
+		sb.append(actorLogged.getMiddleName());
+		sb.append(';');
+		sb.append(actorLogged.getSurname());
+		sb.append(';');
+		sb.append(actorLogged.getEmail());
+		sb.append(';');
+		sb.append(actorLogged.getPhoneNumber());
+		sb.append(';');
+		sb.append(actorLogged.getAddress());
+		sb.append(';');
+		sb.append(actorLogged.getPhoto());
+		sb.append('\n');
+		return sb;
+	}
+
 }

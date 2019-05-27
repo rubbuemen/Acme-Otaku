@@ -37,6 +37,9 @@
 		<security:intercept-url pattern="/security/loginFailure.do"	access="permitAll" />
 		<security:intercept-url pattern="/welcome/index.do"	access="permitAll" />
 		<security:intercept-url pattern="/welcome/legal.do" access="permitAll"/>
+		<security:intercept-url pattern="/stand/listGeneric.do" access="permitAll"/>
+		<security:intercept-url pattern="/product/listGeneric.do" access="permitAll"/>
+		<security:intercept-url pattern="/report/listGeneric.do" access="permitAll"/>
 
 		<security:intercept-url pattern="/actor/register-visitor.do" access="isAnonymous()" />
 		<security:intercept-url pattern="/actor/register-member.do" access="isAnonymous()" />
@@ -51,17 +54,28 @@
 		<security:intercept-url pattern="/day/member/**" access="hasRole('MEMBER')" />
 		<security:intercept-url pattern="/activity/member/**" access="hasRole('MEMBER')" />
 		<security:intercept-url pattern="/enrolment/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/meeting/member/**" access="hasRole('MEMBER')" />
+		<security:intercept-url pattern="/headquarter/member/**" access="hasRole('MEMBER')" />
 		
 		<security:intercept-url pattern="/actor/visitor/**" access="hasRole('VISITOR')" />
 		<security:intercept-url pattern="/event/visitor/**" access="hasRole('VISITOR')" />
 		<security:intercept-url pattern="/activity/visitor/**" access="hasRole('VISITOR')" />
 		<security:intercept-url pattern="/day/visitor/**" access="hasRole('VISITOR')" />
+		<security:intercept-url pattern="/enrolment/visitor/**" access="hasRole('VISITOR')" />
+		<security:intercept-url pattern="/score/visitor/**" access="hasRole('VISITOR')" />
+		<security:intercept-url pattern="/report/visitor/**" access="hasRole('VISITOR')" />
 
 		<security:intercept-url pattern="/actor/seller/**" access="hasRole('SELLER')" />
+		<security:intercept-url pattern="/stand/seller/**" access="hasRole('SELLER')" />
+		<security:intercept-url pattern="/product/seller/**" access="hasRole('SELLER')" />
+		<security:intercept-url pattern="/event/seller/**" access="hasRole('SELLER')" />
+		<security:intercept-url pattern="/day/seller/**" access="hasRole('SELLER')" />
 		
 		<security:intercept-url pattern="/actor/sponsor/**" access="hasRole('SPONSOR')" />
+		<security:intercept-url pattern="/sponsorship/sponsor/**" access="hasRole('SPONSOR')" />
 		
 		<security:intercept-url pattern="/actor/administrator/**" access="hasRole('ADMIN')" />
+		<security:intercept-url pattern="/category/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/systemConfiguration/administrator/**" access="hasRole('ADMIN')" />
 		<security:intercept-url pattern="/dashboard/administrator/**" access="hasRole('ADMIN')" />
 		

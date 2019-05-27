@@ -19,22 +19,48 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="meetings" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<jstl:choose>
+	  <jstl:when test="${row.type eq 'PUBLIC'}">
+	    <jstl:set var="color" value="SkyBlue"/>
+	  </jstl:when>
+	  <jstl:when test="${row.type eq 'PRIVATE'}">
+	    <jstl:set var="color" value="SandyBrown"/>
+	  </jstl:when>
+	  <jstl:otherwise>
+	    <jstl:set var="color" value="inherit"/>
+	  </jstl:otherwise>
+	</jstl:choose>
+
+	<spring:message code="meeting.name" var="name" />
+	<display:column property="name" title="${name}" style="background-color: ${color};"/>
 	
+	<spring:message code="meeting.description" var="description" />
+	<display:column property="description" title="${description}" style="background-color: ${color};"/>
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="meeting.type" var="type" />
+	<display:column property="type" title="${type}" style="background-color: ${color};" />
+	
+	<spring:message code="meeting.date" var="date" />
+	<display:column title="${date}" style="background-color: ${color};">
+			<fmt:formatDate var="format" value="${row.date}" pattern="dd/MM/yyyy HH:mm" />
+			<jstl:out value="${format}" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+	<spring:message code="meeting.headquarter" var="headquarter" />
+	<display:column property="headquarter.name" title="${headquarter}" style="background-color: ${color};" />
+	
+	<spring:message code="meeting.edit" var="editH" />
+	<display:column title="${editH}" style="background-color: ${color};">
+		<acme:button url="meeting/member/edit.do?meetingId=${row.id}" code="button.edit" />
+	</display:column>
+	
+	<spring:message code="meeting.delete" var="deleteH" />
+	<display:column title="${deleteH}" style="background-color: ${color};">
+		<acme:button url="meeting/member/delete.do?meetingId=${row.id}" code="button.delete" />	
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="meeting/member/create.do" code="button.create" />

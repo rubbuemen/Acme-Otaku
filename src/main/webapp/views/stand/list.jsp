@@ -16,25 +16,51 @@
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="stands" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="stand.type" var="type" />
+	<display:column property="type" title="${type}" />
 	
+	<spring:message code="stand.brandName" var="brandName" />
+	<display:column property="brandName" title="${brandName}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="stand.banner" var="banner" />
+	<display:column title="${banner}">
+		<img src="<jstl:out value='${row.banner}' />" width="200px" height="200px" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="stand.events" var="events" />
+	<display:column title="${events}" >
+	<ul>
+		<jstl:forEach items="${row.events}" var="event">
+			<li><jstl:out value="${event.name}"/></li>
+		</jstl:forEach>
+	</ul>
+	</display:column>
+	
+	<spring:message code="stand.products" var="products" />
+	<display:column title="${products}">
+		<acme:button url="product/seller/list.do?standId=${row.id}" code="button.show" />
+	</display:column>
+
+	<spring:message code="stand.edit" var="editH" />
+	<display:column title="${editH}" >
+		<jstl:if test="${empty row.events}">
+			<acme:button url="stand/seller/edit.do?standId=${row.id}" code="button.edit" />
+		</jstl:if>
+	</display:column>
+	
+	<spring:message code="stand.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<jstl:if test="${empty row.events}">
+			<acme:button url="stand/seller/delete.do?standId=${row.id}" code="button.delete" />	
+		</jstl:if>
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="stand/seller/create.do" code="button.create" />

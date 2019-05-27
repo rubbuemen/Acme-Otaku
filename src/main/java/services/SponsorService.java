@@ -15,6 +15,8 @@ import repositories.SponsorRepository;
 import security.Authority;
 import security.UserAccount;
 import domain.Actor;
+import domain.Box;
+import domain.Event;
 import domain.Sponsor;
 import domain.Sponsorship;
 import forms.SponsorForm;
@@ -34,6 +36,12 @@ public class SponsorService {
 	@Autowired
 	private ActorService		actorService;
 
+	@Autowired
+	private EventService		eventService;
+
+	@Autowired
+	private SponsorshipService	sponsorshipService;
+
 
 	// Simple CRUD methods
 	// R44.1
@@ -42,11 +50,13 @@ public class SponsorService {
 
 		result = new Sponsor();
 		final Collection<Sponsorship> sponsorships = new HashSet<>();
+		final Collection<Box> boxes = new HashSet<>();
 		final UserAccount userAccount = this.userAccountService.create();
 		final Authority auth = new Authority();
 
 		auth.setAuthority(Authority.SPONSOR);
 		userAccount.addAuthority(auth);
+		result.setBoxes(boxes);
 		result.setSponsorships(sponsorships);
 		result.setUserAccount(userAccount);
 		result.setIsSuspicious(false);
@@ -109,14 +119,28 @@ public class SponsorService {
 
 		this.actorService.deleteEntities(sponsorLogged);
 
-		//Completar
+		final Collection<Sponsorship> sponsorships = new HashSet<>(sponsorLogged.getSponsorships());
+		for (final Sponsorship ss : sponsorships) {
+			final Event e = ss.getEvent();
+			sponsorLogged.getSponsorships().remove(ss);
+			e.getSponsorships().remove(ss);
+			this.eventService.saveAuxiliar(e);
+			this.sponsorshipService.deleteAuxiliar(ss);
+		}
 
 		this.sponsorRepository.flush();
 		this.sponsorRepository.delete(sponsor);
 	}
 
-
 	// Other business methods
+	public Sponsor findSponsorBySponsorshipId(final int sponsorshipId) {
+		Sponsor result;
+
+		result = this.sponsorRepository.findSponsorBySponsorshipId(sponsorshipId);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
@@ -128,6 +152,7 @@ public class SponsorService {
 		final Sponsor sponsor = sponsorForm.getActor();
 
 		if (sponsor.getId() == 0) {
+			final Collection<Box> boxes = new HashSet<>();
 			final Collection<Sponsorship> sponsorships = new HashSet<>();
 			final UserAccount userAccount = this.userAccountService.create();
 			final Authority auth = new Authority();
@@ -138,6 +163,7 @@ public class SponsorService {
 			sponsor.setSponsorships(sponsorships);
 			sponsor.setUserAccount(userAccount);
 			sponsor.setIsSuspicious(false);
+			sponsor.setBoxes(boxes);
 			sponsorForm.setActor(sponsor);
 		} else {
 			final Sponsor res = this.sponsorRepository.findOne(sponsor.getId());

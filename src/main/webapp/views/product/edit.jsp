@@ -18,15 +18,25 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="product">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
+	<input type="hidden" name="standId" value="${stand.id}">
 	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+	<acme:textbox code="product.name" path="name" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<acme:textbox code="product.description" path="description" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<acme:textbox code="product.price" path="price" placeholder="NNNNN.NN" type="number" min="0" step="0.01" />
+	<br />
+	
+	<acme:textbox code="product.photo" path="photo" placeholder="http://LoremIpsum.com/" />
 	<br />
 	
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${product.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
@@ -34,5 +44,5 @@
 		</jstl:otherwise>
 	</jstl:choose>
 	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="product/seller/list.do?standId=${stand.id}" code="button.cancel" />
 </form:form>

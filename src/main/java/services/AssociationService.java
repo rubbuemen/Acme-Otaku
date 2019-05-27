@@ -21,7 +21,6 @@ import domain.Event;
 import domain.Headquarter;
 import domain.Meeting;
 import domain.Member;
-import domain.Score;
 import domain.Sponsor;
 import domain.Sponsorship;
 import domain.Stand;
@@ -68,9 +67,6 @@ public class AssociationService {
 
 	@Autowired
 	private VisitorService			visitorService;
-
-	@Autowired
-	private ScoreService			scoreService;
 
 	@Autowired
 	private ApplicationService		applicationService;
@@ -156,6 +152,14 @@ public class AssociationService {
 	}
 
 	public void delete(final Association association) {
+		Assert.notNull(association);
+		Assert.isTrue(association.getId() != 0);
+		Assert.isTrue(this.associationRepository.exists(association.getId()));
+
+		this.associationRepository.delete(association);
+	}
+
+	public void deleteAuxiliar(final Association association) {
 		Assert.notNull(association);
 		Assert.isTrue(association.getId() != 0);
 		Assert.isTrue(this.associationRepository.exists(association.getId()));
@@ -326,8 +330,6 @@ public class AssociationService {
 					this.enrolmentService.deleteAuxiliar(e);
 					this.visitorService.saveAuxiliar(v);
 				}
-				for (final Score s : a.getScores())
-					this.scoreService.deleteAuxiliar(s);
 				this.activityService.deleteAuxiliar(a);
 			}
 			for (final Meeting m : meetings)

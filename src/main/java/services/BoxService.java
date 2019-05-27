@@ -34,9 +34,6 @@ public class BoxService {
 	public Box create() {
 		Box result;
 
-		final Actor sender = this.actorService.findActorLogged();
-		Assert.notNull(sender);
-
 		result = new Box();
 		final Collection<Message> messages = new HashSet<>();
 		final Collection<Box> childBoxes = new HashSet<>();

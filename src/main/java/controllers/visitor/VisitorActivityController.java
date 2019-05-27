@@ -29,12 +29,16 @@ public class VisitorActivityController extends AbstractController {
 
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ModelAndView list(@RequestParam final int eventId) {
+	public ModelAndView list(@RequestParam(required = false) final Integer eventId) {
 		ModelAndView result;
+		Event event = null;
 		Collection<Activity> activities;
-		final Event event = this.eventService.findOne(eventId);
+		if (eventId != null) {
+			event = this.eventService.findOne(eventId);
+			activities = this.activityService.findActivitiesFinalModeNotFinishedByEventId(eventId);
+		} else
+			activities = this.activityService.findActivitiesAvailablesToScoreByVisitorLogged();
 
-		activities = this.activityService.findActivitiesFinalModeNotFinishedByEventId(eventId);
 		final String language = LocaleContextHolder.getLocale().getLanguage();
 
 		result = new ModelAndView("activity/list");

@@ -19,22 +19,25 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="scores" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="score.ranking" var="ranking" />
+	<display:column property="ranking" title="${ranking}" />
 	
+	<spring:message code="score.comments" var="comments" />
+	<display:column property="comments" title="${comments}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="score.photos" var="photos" />
+	<display:column title="${photos}" >
+	<jstl:forEach items="${row.photos}" var="photo">
+		<img src="<jstl:out value="${photo}"/>" width="200px" height="200px" />
+	</jstl:forEach>
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
-	</display:column>
-			
+	<spring:message code="score.attachments" var="attachments" />
+	<display:column property="attachments" title="${attachments}" />
+	
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="score/visitor/create.do?activityId=${activity.id}" code="button.create" />
+<acme:button url="activity/visitor/list.do" code="button.back" />

@@ -11,7 +11,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.ProductRepository;
+import domain.Actor;
 import domain.Product;
+import domain.Seller;
+import domain.Stand;
 
 @Service
 @Transactional
@@ -21,14 +24,28 @@ public class ProductService {
 	@Autowired
 	private ProductRepository	productRepository;
 
-
 	// Supporting services
+	@Autowired
+	private ActorService		actorService;
+
+	@Autowired
+	private StandService		standService;
+
+	@Autowired
+	private SellerService		sellerService;
+
 
 	// Simple CRUD methods
+	//R35.2
 	public Product create() {
 		Product result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
+
 		result = new Product();
+
 		return result;
 	}
 
@@ -52,29 +69,78 @@ public class ProductService {
 		return result;
 	}
 
-	public Product save(final Product product) {
+	//R35.2
+	public Product save(final Product product, final Stand stand) {
 		Assert.notNull(product);
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
 
 		Product result;
 
-		if (product.getId() == 0)
+		final Seller sellerOwner = this.sellerService.findSellerByStandId(stand.getId());
+		Assert.isTrue(actorLogged.equals(sellerOwner), "The logged actor is not the owner of this entity");
+
+		if (product.getId() == 0) {
+			final Collection<Product> productsStand = stand.getProducts();
 			result = this.productRepository.save(product);
-		else
+			productsStand.add(result);
+			stand.setProducts(productsStand);
+			this.standService.saveAuxiliar(stand);
+		} else
 			result = this.productRepository.save(product);
 
 		return result;
 	}
 
-	public void delete(final Product product) {
+	//R35.2
+	public void delete(final Product product, final Stand stand) {
 		Assert.notNull(product);
 		Assert.isTrue(product.getId() != 0);
 		Assert.isTrue(this.productRepository.exists(product.getId()));
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
+
+		final Seller sellerOwner = this.sellerService.findSellerByStandId(stand.getId());
+		Assert.isTrue(actorLogged.equals(sellerOwner), "The logged actor is not the owner of this entity");
+
+		final Collection<Product> productsStand = stand.getProducts();
+		productsStand.remove(product);
+		stand.setProducts(productsStand);
+		this.standService.saveAuxiliar(stand);
+
 		this.productRepository.delete(product);
 	}
 
-
 	// Other business methods
+	public Collection<Product> findProductsByStandId(final int standId) {
+		Collection<Product> result;
+
+		result = this.productRepository.findProductsByStandId(standId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	//R35.2
+	public Collection<Product> findProductsByStandSellerLogged(final int standId) {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
+
+		final Collection<Product> result;
+
+		final Stand stand = this.standService.findStandSellerLogged(standId);
+
+		result = stand.getProducts();
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

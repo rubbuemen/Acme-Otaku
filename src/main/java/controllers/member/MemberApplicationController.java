@@ -51,6 +51,10 @@ public class MemberApplicationController extends AbstractController {
 
 		result = new ModelAndView("application/list");
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		final Member memberLogged = (Member) actorLogged;
+		result.addObject("memberLogged", memberLogged);
+
 		result.addObject("applications", applications);
 		result.addObject("requestURI", "application/member/list.do");
 

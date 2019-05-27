@@ -46,7 +46,7 @@ public class Product extends DomainEntity {
 
 	@NotNull
 	@Min(0)
-	@Digits(integer = 2, fraction = 2)
+	@Digits(integer = 5, fraction = 2)
 	public Double getPrice() {
 		return this.price;
 	}

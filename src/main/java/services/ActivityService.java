@@ -112,6 +112,16 @@ public class ActivityService {
 		return result;
 	}
 
+	public Activity saveAuxiliar(final Activity activity) {
+		Assert.notNull(activity);
+
+		Activity result;
+
+		result = this.activityRepository.save(activity);
+
+		return result;
+	}
+
 	//R14.2
 	public void delete(final Activity activity) {
 		Assert.notNull(activity);
@@ -255,7 +265,7 @@ public class ActivityService {
 	}
 
 	//R15.1
-	public Collection<Activity> findActivitiesFinalModeNotFinishedByEventId(final int eventId) {
+	public Collection<Activity> findActivitiesFinalModeNotFinishedByEventId(final Integer eventId) {
 		final Actor actorLogged = this.actorService.findActorLogged();
 		Assert.notNull(actorLogged);
 		this.actorService.checkUserLoginVisitor(actorLogged);
@@ -263,6 +273,32 @@ public class ActivityService {
 		Collection<Activity> result;
 
 		result = this.activityRepository.findActivitiesFinalModeNotFinishedByEventId(eventId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Collection<Activity> findActivitiesAvailables() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
+		Collection<Activity> result;
+
+		result = this.activityRepository.findActivitiesAvailables();
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Collection<Activity> findActivitiesAvailablesToScoreByVisitorLogged() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
+		Collection<Activity> result;
+
+		result = this.activityRepository.findActivitiesAvailablesToScoreByVisitorId(actorLogged.getId());
 		Assert.notNull(result);
 
 		return result;

@@ -18,11 +18,13 @@
 	<a href="welcome/index.do"><img src="${bannerUrl}" alt="${nameSystem} Co., Inc." /></a>
 </div>
 
+
 <div>
 	<ul id="jMenu">
 		<!-- Do not forget the "fNiv" class for the first level links !! -->		
 		<security:authorize access="isAnonymous()">
-<%-- 		<li><a class="fNiv" href="position/listGeneric.do"><spring:message code="master.page.positionsAvailables" /></a></li> --%>
+			<li><a class="fNiv" href="stand/listGeneric.do"><spring:message code="master.page.stands" /></a></li>
+			<li><a class="fNiv" href="report/listGeneric.do"><spring:message code="master.page.reports" /></a></li>
 			<li><a class="fNiv"><spring:message code="master.page.register" /></a>
 				<ul>
 					<li class="arrow"></li>
@@ -37,13 +39,15 @@
 
 		<security:authorize access="hasRole('MEMBER')">
 		<jstl:if test="${role eq 'PRESIDENT'}">
-			<li>
+			<li style="background-color: ${association.representativeColor}">
 				<a class="fNiv"><spring:message code="master.page.president" /></a>
 				<ul>
-					<li class="arrow"></li>
+					<li class="arrow" style="background-color: ${association.representativeColor}"></li>
 					<jstl:if test="${role eq 'PRESIDENT'}">
-						<li><a href="application/member/listPresident.do"><spring:message code="master.page.applicationsAssociation" /></a></li>
-						<li><a href="member/member/list.do"><spring:message code="master.page.membersAssociation" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="application/member/listPresident.do"><spring:message code="master.page.applicationsAssociation" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="member/member/list.do"><spring:message code="master.page.membersAssociation" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="meeting/member/list.do"><spring:message code="master.page.meetings" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="headquarter/member/list.do"><spring:message code="master.page.headquarters" /></a></li>
 					</jstl:if>
 				</ul>
 			</li>
@@ -51,16 +55,16 @@
 		</security:authorize>
 		
 		<security:authorize access="hasRole('MEMBER')">
-			<li>
+			<li style="background-color: ${association.representativeColor}">
 				<a class="fNiv"><spring:message code="master.page.member" /></a>
 				<ul>
-					<li class="arrow"></li>
-					<li><a href="association/member/show.do"><spring:message code="master.page.association" /></a></li>
-					<li><a href="application/member/list.do"><spring:message code="master.page.applications" /></a></li>
+					<li class="arrow" style="background-color: ${association.representativeColor}"></li>
+					<li style="background-color: ${association.representativeColor}"><a href="association/member/show.do"><spring:message code="master.page.association" /></a></li>
+					<li style="background-color: ${association.representativeColor}"><a href="application/member/list.do"><spring:message code="master.page.applications" /></a></li>
 					<jstl:if test="${association != null}">
-						<li><a href="event/member/list.do"><spring:message code="master.page.events" /></a></li>
-						<li><a href="activity/member/list.do"><spring:message code="master.page.activities" /></a></li>
-						<li><a href="enrolment/member/list.do"><spring:message code="master.page.enrolments" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="event/member/list.do"><spring:message code="master.page.events" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="activity/member/list.do"><spring:message code="master.page.activities" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="enrolment/member/list.do"><spring:message code="master.page.enrolments" /></a></li>
 					</jstl:if>
 					
 				</ul>
@@ -73,6 +77,9 @@
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="event/visitor/list.do"><spring:message code="master.page.events" /></a></li>
+					<li><a href="enrolment/visitor/list.do"><spring:message code="master.page.enrolments" /></a></li>
+					<li><a href="activity/visitor/list.do"><spring:message code="master.page.activitiesForScore" /></a></li>
+					<li><a href="report/visitor/list.do"><spring:message code="master.page.reports" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>
@@ -82,7 +89,8 @@
 				<a class="fNiv"><spring:message code="master.page.seller" /></a>
 				<ul>
 					<li class="arrow"></li>
-<%-- 					<li><a href="audit/seller/list.do"><spring:message code="master.page.audits" /></a></li> --%>
+					<li><a href="stand/seller/list.do"><spring:message code="master.page.stands" /></a></li>
+					<li><a href="event/seller/list.do"><spring:message code="master.page.events" /></a></li>
 				</ul>
 			</li>
 		</security:authorize>
@@ -104,6 +112,7 @@
 				<ul>
 					<li class="arrow"></li>
 					<li><a href="actor/administrator/register-administrator.do"><spring:message code="master.page.register.admin" /></a></li>
+					<li><a href="category/administrator/list.do"><spring:message code="master.page.categories" /></a></li>
 					<li><a href="dashboard/administrator/show.do"><spring:message code="master.page.dashboard" /></a></li>	
 					<li><a href="systemConfiguration/administrator/show.do"><spring:message code="master.page.systemConfiguration" /></a></li>	
 					<li><a href="systemConfiguration/administrator/actorsList.do"><spring:message code="master.page.actorsList" /></a></li>
@@ -112,21 +121,22 @@
 		</security:authorize>
 		
 		<security:authorize access="isAuthenticated()">
-		<%-- <li><a class="fNiv" href="position/listGeneric.do"><spring:message code="master.page.positionsAvailables" /></a></li> --%>
-		<li><a class="fNiv" href="socialProfile/list.do"><spring:message code="master.page.socialProfiles" /></a></li>
-		<li><a class="fNiv" href="box/list.do"><spring:message code="master.page.boxes" /></a></li>
-			<li>
+		<li style="background-color: ${association.representativeColor}"><a class="fNiv" href="stand/listGeneric.do"><spring:message code="master.page.stands" /></a></li>
+		<li style="background-color: ${association.representativeColor}"><a class="fNiv" href="report/listGeneric.do"><spring:message code="master.page.reports" /></a></li>
+		<li style="background-color: ${association.representativeColor}"><a class="fNiv" href="socialProfile/list.do"><spring:message code="master.page.socialProfiles" /></a></li>
+		<li style="background-color: ${association.representativeColor}"><a class="fNiv" href="box/list.do"><spring:message code="master.page.boxes" /></a></li>
+			<li style="background-color: ${association.representativeColor}">
 				<a class="fNiv"> 
 					<spring:message code="master.page.profile" /> 
 			        (<security:authentication property="principal.username" />)
 				</a>
 				<ul>
-					<li class="arrow"></li>
+					<li class="arrow" style="background-color: ${association.representativeColor}"></li>
 					<security:authorize access="hasRole('VISITOR')">
 						<li><a href="actor/visitor/edit.do"><spring:message code="master.page.edit.profile" /></a></li>
 					</security:authorize>
 					<security:authorize access="hasRole('MEMBER')">
-						<li><a href="actor/member/edit.do"><spring:message code="master.page.edit.profile" /></a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="actor/member/edit.do"><spring:message code="master.page.edit.profile" /></a></li>
 					</security:authorize>
 					<security:authorize access="hasRole('SELLER')">
 						<li><a href="actor/seller/edit.do"><spring:message code="master.page.edit.profile" /></a></li>
@@ -139,10 +149,10 @@
 					</security:authorize>
 					<spring:message code="master.page.delete.account.confirm" var="confirm" />
 					<security:authorize access="!hasRole('ADMIN')">				
-						<li><a href="actor/delete.do" onClick="return checkPosting('${confirm}');" ><spring:message code="master.page.delete.account" /> </a></li>
+						<li style="background-color: ${association.representativeColor}"><a href="actor/delete.do" onClick="return checkPosting('${confirm}');" ><spring:message code="master.page.delete.account" /> </a></li>
 					</security:authorize>	
-					<li><a href="actor/export.do" ><spring:message code="master.page.export.data" /> </a></li>
-					<li><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
+					<li style="background-color: ${association.representativeColor}"><a href="actor/export.do" ><spring:message code="master.page.export.data" /> </a></li>
+					<li style="background-color: ${association.representativeColor}"><a href="j_spring_security_logout"><spring:message code="master.page.logout" /> </a></li>
 				</ul>
 			</li>
 		</security:authorize>

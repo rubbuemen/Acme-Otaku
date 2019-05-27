@@ -18,15 +18,29 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<form:form action="${actionURL}" modelAttribute="entidad">
+<form:form action="${actionURL}" modelAttribute="report">
 	<form:hidden path="id" />
 	<form:hidden path="version" />
 	
-	<acme:textbox code="entidad.atributo" path="atributo" placeholder="Lorem Ipsum"/>
+	<acme:textarea code="report.text" path="text" placeholder="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean at auctor massa"/>
 	<br />
 	
+	<acme:textbox code="report.score" path="score" placeholder="N" type="number" min="1" max="5" />
+	<br />
+	
+	<acme:textarea code="report.photos" path="photos" placeholder="http://LoremIpsum.com, http://LoremIpsum.com, http://LoremIpsum.com, ..."/>
+	<br />
+	
+	<acme:textbox code="report.summary" path="summary" placeholder="Lorem Ipsum"/>
+	<br />
+	
+	<jstl:if test="${report.id == 0}">
+		<acme:select items="${stands}" itemLabel="brandName" code="report.stand" path="stand"/>
+		<br />
+	</jstl:if>
+	
 	<jstl:choose>
-		<jstl:when test="${entidad.id == 0}">
+		<jstl:when test="${report.id == 0}">
 			<acme:submit name="save" code="button.register" />
 		</jstl:when>
 		<jstl:otherwise>
@@ -34,5 +48,5 @@
 		</jstl:otherwise>
 	</jstl:choose>
 	
-	<acme:cancel url="entidad/rol/list.do" code="button.cancel" />
+	<acme:cancel url="report/visitor/list.do" code="button.cancel" />
 </form:form>

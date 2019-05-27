@@ -15,8 +15,11 @@ import repositories.SellerRepository;
 import security.Authority;
 import security.UserAccount;
 import domain.Actor;
+import domain.Box;
+import domain.Report;
 import domain.Seller;
 import domain.Stand;
+import domain.Visitor;
 import forms.SellerForm;
 
 @Service
@@ -34,6 +37,15 @@ public class SellerService {
 	@Autowired
 	private ActorService		actorService;
 
+	@Autowired
+	private StandService		standService;
+
+	@Autowired
+	private ReportService		reportService;
+
+	@Autowired
+	private VisitorService		visitorService;
+
 
 	// Simple CRUD methods
 	// R33.1
@@ -42,11 +54,13 @@ public class SellerService {
 
 		result = new Seller();
 		final Collection<Stand> stands = new HashSet<>();
+		final Collection<Box> boxes = new HashSet<>();
 		final UserAccount userAccount = this.userAccountService.create();
 		final Authority auth = new Authority();
 
 		auth.setAuthority(Authority.SELLER);
 		userAccount.addAuthority(auth);
+		result.setBoxes(boxes);
 		result.setStands(stands);
 		result.setUserAccount(userAccount);
 		result.setIsSuspicious(false);
@@ -109,14 +123,35 @@ public class SellerService {
 
 		this.actorService.deleteEntities(sellerLogged);
 
-		//Completar
+		final Collection<Stand> standsSeller = new HashSet<>(sellerLogged.getStands());
+		for (final Stand s : standsSeller) {
+			final Collection<Report> reportsByStandIdCollection = new HashSet<>(this.reportService.findReportsByStandId(s.getId()));
+			for (final Report r : reportsByStandIdCollection) {
+				final Visitor v = this.visitorService.findVisitorByReportId(r.getId());
+				v.getReports().remove(r);
+				this.reportService.deleteAuxiliar(r);
+				this.visitorService.saveAuxiliar(v);
+			}
+			this.standService.deleteAuxiliar(s);
+		}
 
 		this.sellerRepository.flush();
 		this.sellerRepository.delete(seller);
 	}
 
-
 	// Other business methods
+
+	public Seller findSellerByStandId(final int standId) {
+		Assert.isTrue(standId != 0);
+
+		Seller result;
+
+		result = this.sellerRepository.findSellerByStandId(standId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
@@ -128,6 +163,7 @@ public class SellerService {
 		final Seller seller = sellerForm.getActor();
 
 		if (seller.getId() == 0) {
+			final Collection<Box> boxes = new HashSet<>();
 			final Collection<Stand> stands = new HashSet<>();
 			final UserAccount userAccount = this.userAccountService.create();
 			final Authority auth = new Authority();
@@ -138,6 +174,7 @@ public class SellerService {
 			seller.setStands(stands);
 			seller.setUserAccount(userAccount);
 			seller.setIsSuspicious(false);
+			seller.setBoxes(boxes);
 			sellerForm.setActor(seller);
 		} else {
 			final Seller res = this.sellerRepository.findOne(seller.getId());

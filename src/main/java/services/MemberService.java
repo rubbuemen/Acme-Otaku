@@ -17,6 +17,8 @@ import security.UserAccount;
 import domain.Activity;
 import domain.Actor;
 import domain.Application;
+import domain.Association;
+import domain.Box;
 import domain.Event;
 import domain.Headquarter;
 import domain.Meeting;
@@ -38,6 +40,9 @@ public class MemberService {
 	@Autowired
 	private ActorService		actorService;
 
+	@Autowired
+	private ApplicationService	applicationService;
+
 
 	// Simple CRUD methods
 	// R10.1
@@ -50,11 +55,13 @@ public class MemberService {
 		final Collection<Meeting> meetings = new HashSet<>();
 		final Collection<Headquarter> headquarters = new HashSet<>();
 		final Collection<Application> applications = new HashSet<>();
+		final Collection<Box> boxes = new HashSet<>();
 		final UserAccount userAccount = this.userAccountService.create();
 		final Authority auth = new Authority();
 
 		auth.setAuthority(Authority.MEMBER);
 		userAccount.addAuthority(auth);
+		result.setBoxes(boxes);
 		result.setEvents(events);
 		result.setActivities(activities);
 		result.setMeetings(meetings);
@@ -119,9 +126,20 @@ public class MemberService {
 
 		final Member memberLogged = (Member) actorLogged;
 
+		final Association association = memberLogged.getAssociation();
+
+		Assert.isNull(association, "You must leave your association before deleting your account");
+
 		this.actorService.deleteEntities(memberLogged);
 
-		//Completar
+		final Collection<Application> applications = new HashSet<>(memberLogged.getApplications());
+
+		for (final Application a : applications) {
+			final Association as = a.getAssociation();
+			as.getApplications().remove(a);
+			memberLogged.getApplications().remove(a);
+			this.applicationService.delete(a);
+		}
 
 		this.memberRepository.flush();
 		this.memberRepository.delete(member);
@@ -238,6 +256,28 @@ public class MemberService {
 		return result;
 	}
 
+	public Member findMemberByMeetingId(final int meetingId) {
+		Assert.isTrue(meetingId != 0);
+
+		Member result;
+
+		result = this.memberRepository.findMemberByMeetingId(meetingId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Member findMemberByHeadquarterId(final int headquarterId) {
+		Assert.isTrue(headquarterId != 0);
+
+		Member result;
+
+		result = this.memberRepository.findMemberByHeadquarterId(headquarterId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
@@ -249,6 +289,7 @@ public class MemberService {
 		final Member member = memberForm.getActor();
 
 		if (member.getId() == 0) {
+			final Collection<Box> boxes = new HashSet<>();
 			final Collection<Event> events = new HashSet<>();
 			final Collection<Activity> activities = new HashSet<>();
 			final Collection<Meeting> meetings = new HashSet<>();
@@ -266,6 +307,7 @@ public class MemberService {
 			member.setHeadquarters(headquarters);
 			member.setApplications(applications);
 			member.setUserAccount(userAccount);
+			member.setBoxes(boxes);
 			member.setIsSuspicious(false);
 			memberForm.setActor(member);
 		} else {

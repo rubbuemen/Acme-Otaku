@@ -28,7 +28,11 @@
 	</display:column>
 	
 	<spring:message code="day.price" var="price" />
-	<display:column property="price" title="${price}" />
+	<display:column title="${price}">
+			<fmt:formatNumber var="priceVat" type="number" maxFractionDigits="2" value="${row.price + row.price * (vatPercentage / 100)}"/>
+			<jstl:set var="priceVat" value="${priceVat} (${vatPercentage} %)"/>
+			<jstl:out value="${priceVat}" />
+	</display:column>
 	
 	<security:authorize access="hasRole('MEMBER')">
 		<jstl:if test="${!event.isFinalMode}">
@@ -56,3 +60,8 @@
 <security:authorize access="hasRole('VISITOR')">
 	<acme:button url="event/visitor/list.do" code="button.back" />
 </security:authorize>
+
+<security:authorize access="hasRole('SELLER')">
+	<acme:button url="event/seller/list.do" code="button.back" />
+</security:authorize>
+

@@ -37,29 +37,20 @@
 	<spring:message code="systemConfiguration.welcomeMessageSpanish" var="welcomeMessageSpanish" />
 	<li><b>${welcomeMessageSpanish}:</b> <jstl:out value="${systemConfiguration.welcomeMessageSpanish}" /></li>
 	
-	<spring:message code="systemConfiguration.phoneCountryCode" var="phoneCountryCode" />
-	<li><b>${phoneCountryCode}:</b> <jstl:out value="${systemConfiguration.phoneCountryCode}" /></li>
-	
-	<spring:message code="systemConfiguration.periodFinder" var="periodFinder" />
-	<li><b>${periodFinder}:</b> <jstl:out value="${systemConfiguration.periodFinder}" /></li>
-	
-	<spring:message code="systemConfiguration.maxResultsFinder" var="maxResultsFinder" />
-	<li><b>${maxResultsFinder}:</b> <jstl:out value="${systemConfiguration.maxResultsFinder}" /></li>
-	
 	<spring:message code="systemConfiguration.spamWords" var="spamWords" />
 	<li><b>${spamWords}:</b> <jstl:out value="${systemConfiguration.spamWords}" /></li>
-	
-	<spring:message code="systemConfiguration.fare" var="fare" />
-	<li><b>${fare}:</b> <jstl:out value="${systemConfiguration.fare}" /></li>
 	
 	<spring:message code="systemConfiguration.VATPercentage" var="VATPercentage" />
 	<li><b>${VATPercentage}:</b> <jstl:out value="${systemConfiguration.VATPercentage}" /></li>
 	
+	<spring:message code="systemConfiguration.phoneCountryCode" var="phoneCountryCode" />
+	<li><b>${phoneCountryCode}:</b> <jstl:out value="${systemConfiguration.phoneCountryCode}" /></li>
+	
+	<spring:message code="systemConfiguration.creditCardMakes" var="creditCardMakes" />
+	<li><b>${creditCardMakes}:</b> <jstl:out value="${systemConfiguration.creditCardMakes}" /></li>
+	
+	
+	
 </ul>
 
 <acme:button url="systemConfiguration/administrator/edit.do" code="button.edit" /><br /><br />
-<acme:button url="systemConfiguration/administrator/computeSpammer.do" code="button.computeSpammer" />
-<jstl:if test="${!systemConfiguration.isNotifiedRebrand}">
-	<acme:button url="systemConfiguration/administrator/notifyRebranding.do" code="button.notifyRebranding" />
-</jstl:if>
-<acme:button url="systemConfiguration/administrator/computeScore.do" code="button.computeScore" />

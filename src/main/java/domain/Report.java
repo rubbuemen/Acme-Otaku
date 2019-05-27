@@ -33,7 +33,7 @@ public class Report extends DomainEntity {
 	private Integer				score;
 	private Collection<String>	photos;
 	private Date				moment;
-	private String				sumary;
+	private String				summary;
 
 
 	// Getters and Setters
@@ -83,12 +83,12 @@ public class Report extends DomainEntity {
 
 	@NotBlank
 	@SafeHtml(whitelistType = WhiteListType.NONE)
-	public String getSumary() {
-		return this.sumary;
+	public String getSummary() {
+		return this.summary;
 	}
 
-	public void setSumary(final String sumary) {
-		this.sumary = sumary;
+	public void setSummary(final String summary) {
+		this.summary = summary;
 	}
 
 
@@ -96,6 +96,7 @@ public class Report extends DomainEntity {
 	private Stand	stand;
 
 
+	@NotNull
 	@Valid
 	@ManyToOne(optional = false)
 	public Stand getStand() {

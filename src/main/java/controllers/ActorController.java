@@ -8,6 +8,9 @@
 
 package controllers;
 
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.Assert;
@@ -15,6 +18,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 import services.ActorService;
@@ -265,32 +269,34 @@ public class ActorController extends AbstractController {
 				this.sponsorService.delete((Sponsor) actor);
 			result = new ModelAndView("redirect:/j_spring_security_logout");
 		} catch (final Throwable oops) {
-			result = this.createEditModelAndView(actor, "commit.error");
+			if (oops.getMessage().equals("You must leave your association before deleting your account"))
+				result = this.createEditModelAndView(null, "actor.member.error.delete");
+			else
+				result = this.createEditModelAndView(null, "commit.error");
 
 		}
 
 		return result;
 	}
+	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	@ResponseBody
+	public ModelAndView exportData(final HttpServletResponse response) {
+		ModelAndView result;
+		try {
+			final StringBuilder sb = this.actorService.exportData();
+			response.setContentType("text/csv");
+			response.setHeader("Content-Disposition", "attachment;filename=data.csv");
+			final ServletOutputStream outStream = response.getOutputStream();
+			outStream.println(sb.toString());
+			outStream.flush();
+			outStream.close();
+			result = new ModelAndView("redirect:/welcome/index.do");
+		} catch (final Throwable oops) {
+			result = this.createEditModelAndView(null, "commit.error");
+		}
 
-	//	@RequestMapping(value = "/export", method = RequestMethod.GET)
-	//	@ResponseBody
-	//	public ModelAndView exportData(final HttpServletResponse response) {
-	//		ModelAndView result;
-	//		try {
-	//			final StringBuilder sb = this.actorService.exportData();
-	//			response.setContentType("text/csv");
-	//			response.setHeader("Content-Disposition", "attachment;filename=data.csv");
-	//			final ServletOutputStream outStream = response.getOutputStream();
-	//			outStream.println(sb.toString());
-	//			outStream.flush();
-	//			outStream.close();
-	//			result = new ModelAndView("redirect:/welcome/index.do");
-	//		} catch (final Throwable oops) {
-	//			result = this.createEditModelAndView(null, "commit.error");
-	//		}
-	//
-	//		return result;
-	//	}
+		return result;
+	}
 
 	// Ancillary methods
 

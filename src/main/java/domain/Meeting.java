@@ -79,6 +79,7 @@ public class Meeting extends DomainEntity {
 	private Headquarter	headquarter;
 
 
+	@NotNull
 	@Valid
 	@ManyToOne(optional = false)
 	public Headquarter getHeadquarter() {

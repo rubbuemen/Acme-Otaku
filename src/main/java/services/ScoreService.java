@@ -11,7 +11,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.ScoreRepository;
+import domain.Activity;
+import domain.Actor;
 import domain.Score;
+import domain.Visitor;
 
 @Service
 @Transactional
@@ -21,11 +24,24 @@ public class ScoreService {
 	@Autowired
 	private ScoreRepository	scoreRepository;
 
-
 	// Supporting services
+	@Autowired
+	private ActorService	actorService;
+
+	@Autowired
+	private VisitorService	visitorService;
+
+	@Autowired
+	private ActivityService	activityService;
+
 
 	// Simple CRUD methods
+	//R15.4
 	public Score create() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
 		Score result;
 
 		result = new Score();
@@ -52,15 +68,27 @@ public class ScoreService {
 		return result;
 	}
 
-	public Score save(final Score score) {
+	//R15.4
+	public Score save(final Score score, final Activity activity) {
 		Assert.notNull(score);
+		Assert.isTrue(score.getId() == 0, "You can't edit scores");
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
 
 		Score result;
 
-		if (score.getId() == 0)
-			result = this.scoreRepository.save(score);
-		else
-			result = this.scoreRepository.save(score);
+		final Collection<Visitor> visitorParticipated = this.visitorService.findVisitorsByActivityId(activity.getId());
+		Assert.isTrue(visitorParticipated.contains(actorLogged), "You have not participated in this activity");
+
+		Assert.isTrue(activity.getIsFinished(), "The activity is not finished yet");
+
+		result = this.scoreRepository.save(score);
+		final Collection<Score> scoresActivity = activity.getScores();
+		scoresActivity.add(result);
+		activity.setScores(scoresActivity);
+		this.activityService.saveAuxiliar(activity);
 
 		return result;
 	}
@@ -81,8 +109,25 @@ public class ScoreService {
 		this.scoreRepository.delete(score);
 	}
 
-
 	// Other business methods
+	public Collection<Score> findScoresByActivityId(final int activityId) {
+		Assert.isTrue(activityId != 0);
+
+		Collection<Score> result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
+
+		final Collection<Visitor> visitorParticipated = this.visitorService.findVisitorsByActivityId(activityId);
+		Assert.isTrue(visitorParticipated.contains(actorLogged), "You have not participated in this activity");
+
+		final Activity activity = this.activityService.findOne(activityId);
+		result = activity.getScores();
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

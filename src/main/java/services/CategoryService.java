@@ -11,6 +11,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import repositories.CategoryRepository;
+import domain.Actor;
 import domain.Category;
 
 @Service
@@ -21,14 +22,22 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository	categoryRepository;
 
-
 	// Supporting services
+	@Autowired
+	private ActorService		actorService;
+
 
 	// Simple CRUD methods
+	// R16.2
 	public Category create() {
 		Category result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
 		result = new Category();
+
 		return result;
 	}
 
@@ -52,29 +61,48 @@ public class CategoryService {
 		return result;
 	}
 
+	// R16.2
 	public Category save(final Category category) {
 		Assert.notNull(category);
 
 		Category result;
 
-		if (category.getId() == 0)
-			result = this.categoryRepository.save(category);
-		else
-			result = this.categoryRepository.save(category);
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.categoryRepository.save(category);
 
 		return result;
 	}
 
+	// R16.2
 	public void delete(final Category category) {
 		Assert.notNull(category);
 		Assert.isTrue(category.getId() != 0);
 		Assert.isTrue(this.categoryRepository.exists(category.getId()));
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		final Collection<Category> categoriesUsed = this.categoryRepository.findCategoriesUsed();
+		Assert.isTrue(!categoriesUsed.contains(category), "This category can not be deleted because it is in use");
+
 		this.categoryRepository.delete(category);
 	}
 
-
 	// Other business methods
+	public Collection<Category> findPositionsBrotherhoodUsed() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		final Collection<Category> result = this.categoryRepository.findCategoriesUsed();
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired

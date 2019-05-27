@@ -25,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.DayService;
 import services.EventService;
+import services.SystemConfigurationService;
 import controllers.AbstractController;
 import domain.Day;
 import domain.Event;
@@ -34,10 +35,13 @@ import domain.Event;
 public class MemberDayController extends AbstractController {
 
 	@Autowired
-	DayService		dayService;
+	DayService					dayService;
 
 	@Autowired
-	EventService	eventService;
+	EventService				eventService;
+
+	@Autowired
+	SystemConfigurationService	systemConfigurationService;
 
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -47,9 +51,11 @@ public class MemberDayController extends AbstractController {
 		final Event event = this.eventService.findOne(eventId);
 
 		try {
+			final Double vatPercentage = this.systemConfigurationService.getConfiguration().getVATPercentage();
 			days = this.dayService.findDaysByEventMemberLogged(eventId);
 			result = new ModelAndView("day/list");
 			result.addObject("days", days);
+			result.addObject("vatPercentage", vatPercentage);
 			result.addObject("requestURI", "day/member/list.do");
 			result.addObject("event", event);
 		} catch (final Throwable oops) {
@@ -185,8 +191,11 @@ public class MemberDayController extends AbstractController {
 		} else
 			result = new ModelAndView("day/edit");
 
+		final Double vatPercentage = this.systemConfigurationService.getConfiguration().getVATPercentage();
+
 		result.addObject("event", event);
 		result.addObject("day", day);
+		result.addObject("vatPercentage", vatPercentage);
 		result.addObject("actionURL", "day/member/edit.do");
 		result.addObject("message", message);
 

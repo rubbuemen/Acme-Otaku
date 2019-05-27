@@ -19,22 +19,43 @@
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="reports" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="report.text" var="text" />
+	<display:column property="text" title="${text}" />
 	
+	<spring:message code="report.score" var="score" />
+	<display:column property="score" title="${score}" />
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="report.photos" var="photos" />
+	<display:column title="${photos}" >
+	<jstl:forEach items="${row.photos}" var="photo">
+		<img src="<jstl:out value="${photo}"/>" width="200px" height="200px" />
+	</jstl:forEach>
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
+	<spring:message code="report.moment" var="moment" />
+	<display:column title="${moment}">
+			<fmt:formatDate var="format" value="${row.moment}" pattern="dd/MM/yyyy HH:mm" />
+			<jstl:out value="${format}" />
+	</display:column>
+
+	<spring:message code="report.summary" var="summary" />
+	<display:column property="summary" title="${summary}" />
+	
+	<spring:message code="report.stand" var="stand" />
+	<display:column property="stand.brandName" title="${stand}" />
+	
+	<spring:message code="report.edit" var="editH" />
+	<display:column title="${editH}" >
+		<acme:button url="report/visitor/edit.do?reportId=${row.id}" code="button.edit" />
+	</display:column>
+	
+	<spring:message code="report.delete" var="deleteH" />
 	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+		<acme:button url="report/visitor/delete.do?reportId=${row.id}" code="button.delete" />	
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="report/visitor/create.do" code="button.create" />

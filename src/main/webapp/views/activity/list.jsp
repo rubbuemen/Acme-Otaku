@@ -53,6 +53,15 @@
 	</jstl:if>
 	</display:column>
 	
+	<security:authorize access="hasRole('VISITOR')">
+			<jstl:if test="${row.isFinished}">
+				<spring:message code="activity.scores" var="scoresH" />
+				<display:column title="${scoresH}" >
+					<acme:button url="score/visitor/list.do?activityId=${row.id}" code="button.show" />
+				</display:column>
+			</jstl:if>
+	</security:authorize>
+	
 	<security:authorize access="hasRole('MEMBER')">
 		<spring:message code="activity.edit" var="editH" />
 		<display:column title="${editH}" >

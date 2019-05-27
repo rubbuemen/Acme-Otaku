@@ -1,7 +1,10 @@
 
 package services;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ import security.Authority;
 import security.UserAccount;
 import domain.Actor;
 import domain.Administrator;
+import domain.Box;
+import domain.Seller;
+import domain.Stand;
 import forms.AdministratorForm;
 
 @Service
@@ -42,12 +48,15 @@ public class AdministratorService {
 		Assert.notNull(actorLogged);
 		this.actorService.checkUserLoginAdministrator(actorLogged);
 
+		final Collection<Box> boxes = new HashSet<>();
+
 		result = new Administrator();
 		final UserAccount userAccount = this.userAccountService.create();
 		final Authority auth = new Authority();
 
 		auth.setAuthority(Authority.ADMIN);
 		userAccount.addAuthority(auth);
+		result.setBoxes(boxes);
 		result.setUserAccount(userAccount);
 		result.setIsSuspicious(false);
 
@@ -97,8 +106,186 @@ public class AdministratorService {
 		this.administratorRepository.delete(administrator);
 	}
 
-
 	// Other business methods
+	//Queries Dashboard
+	public String dashboardQueryC1() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC1();
+
+		return result;
+	}
+
+	public String dashboardQueryC2() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC2();
+
+		return result;
+	}
+
+	public String dashboardQueryC3() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC3();
+
+		return result;
+	}
+
+	public String dashboardQueryC4() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC4();
+
+		return result;
+	}
+
+	public String dashboardQueryC5() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC5();
+
+		return result;
+	}
+
+	public String dashboardQueryC6() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC6();
+
+		return result;
+	}
+
+	public String dashboardQueryC7() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC7();
+
+		return result;
+	}
+
+	public String dashboardQueryC8() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryC8();
+
+		return result;
+	}
+
+	public String dashboardQueryB1() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryB1();
+
+		return result;
+	}
+
+	public String dashboardQueryB2() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryB2();
+
+		return result;
+	}
+
+	public String dashboardQueryB3() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryB3();
+
+		return result;
+	}
+
+	public Collection<Seller> dashboardQueryB4() {
+		Collection<Seller> result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryB4();
+
+		final List<Seller> resultList = new ArrayList<>(result);
+
+		if (resultList.size() > 3)
+			result = resultList.subList(0, 3);
+
+		return result;
+	}
+
+	public Collection<Stand> dashboardQueryA1() {
+		Collection<Stand> result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryA1();
+
+		final List<Stand> resultList = new ArrayList<>(result);
+
+		if (resultList.size() > 3)
+			result = resultList.subList(0, 3);
+
+		return result;
+	}
+
+	public String dashboardQueryA2() {
+		String result;
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginAdministrator(actorLogged);
+
+		result = this.administratorRepository.dashboardQueryA2();
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
@@ -110,6 +297,7 @@ public class AdministratorService {
 		final Administrator administrator = administratorForm.getActor();
 
 		if (administrator.getId() == 0) {
+			final Collection<Box> boxes = new HashSet<>();
 			final UserAccount userAccount = this.userAccountService.create();
 			final Authority auth = new Authority();
 			auth.setAuthority(Authority.ADMIN);
@@ -118,6 +306,7 @@ public class AdministratorService {
 			userAccount.setPassword(administratorForm.getActor().getUserAccount().getPassword());
 			administrator.setUserAccount(userAccount);
 			administrator.setIsSuspicious(false);
+			administrator.setBoxes(boxes);
 			administratorForm.setActor(administrator);
 		} else {
 			final Administrator res = this.administratorRepository.findOne(administrator.getId());

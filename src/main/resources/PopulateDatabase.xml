@@ -1597,7 +1597,7 @@
 		<property name="slogan" value="Únete y te divertirás" />
 		<property name="logo" value="http://oi67.tinypic.com/2j46fbm.jpg" />
 		<property name="isAllowedToJoin" value="true" />
-		<property name="representativeColor" value="#5900a3" />
+		<property name="representativeColor" value="#31005E" />
 	</bean>
 	<bean id="association2" class="domain.Association">
 		<property name="name" value="Guardianes" />
@@ -1606,7 +1606,7 @@
 		<property name="slogan" value="Únete y te divertirás" />
 		<property name="logo" value="http://oi64.tinypic.com/2ztghzr.jpg" />
 		<property name="isAllowedToJoin" value="true" />
-		<property name="representativeColor" value="#A60000" />
+		<property name="representativeColor" value="#5A0000" />
 	</bean>
 	<bean id="association3" class="domain.Association">
 		<property name="name" value="CDO" />
@@ -1615,7 +1615,7 @@
 		<property name="slogan" value="Únete y te divertirás" />
 		<property name="logo" value="http://oi65.tinypic.com/29azhiq.jpg" />
 		<property name="isAllowedToJoin" value="false" />
-		<property name="representativeColor" value="#176800" />
+		<property name="representativeColor" value="#004D16" />
 	</bean>
 
 	<!-- Application -->
@@ -2122,7 +2122,6 @@
 				<value>http://oi66.tinypic.com/v762ht.jpg</value>
 			</list>
 		</property>
-		<property name="association" ref="association1" />
 	</bean>
 	<bean id="headquarter2" class="domain.Headquarter">
 		<property name="name" value="Sede secundaria" />
@@ -2132,7 +2131,6 @@
 				<value>http://oi65.tinypic.com/2zdyet2.jpg</value>
 			</list>
 		</property>
-		<property name="association" ref="association1" />
 	</bean>
 	<bean id="headquarter3" class="domain.Headquarter">
 		<property name="name" value="Sede afiliada" />
@@ -2142,7 +2140,6 @@
 				<value>http://oi66.tinypic.com/sy4ksg.jpg</value>
 			</list>
 		</property>
-		<property name="association" ref="association1" />
 	</bean>
 	<bean id="headquarter4" class="domain.Headquarter">
 		<property name="name" value="Sede" />
@@ -2152,7 +2149,6 @@
 				<value>http://oi66.tinypic.com/v762ht.jpg</value>
 			</list>
 		</property>
-		<property name="association" ref="association2" />
 	</bean>
 	<bean id="headquarter5" class="domain.Headquarter">
 		<property name="name" value="Sede prestada" />
@@ -2162,7 +2158,6 @@
 				<value>http://oi66.tinypic.com/sy4ksg.jpg</value>
 			</list>
 		</property>
-		<property name="association" ref="association2" />
 	</bean>
 
 	<!-- Meeting -->
@@ -2305,21 +2300,21 @@
 			</list>
 		</property>
 		<property name="moment" value="2019/03/10 20:30" />
-		<property name="sumary" value="Buen stand" />
+		<property name="summary" value="Buen stand" />
 		<property name="stand" ref="stand1" />
 	</bean>
 	<bean id="report2" class="domain.Report">
 		<property name="text" value="No me ha gustado" />
 		<property name="score" value="2" />
 		<property name="moment" value="2019/05/10 10:30" />
-		<property name="sumary" value="Copias" />
+		<property name="summary" value="Copias" />
 		<property name="stand" ref="stand2" />
 	</bean>
 	<bean id="report3" class="domain.Report">
 		<property name="text" value="Todo muy caro" />
 		<property name="score" value="1" />
 		<property name="moment" value="2019/03/10 12:50" />
-		<property name="sumary" value="Caro" />
+		<property name="summary" value="Caro" />
 		<property name="stand" ref="stand2" />
 	</bean>
 	
@@ -2391,7 +2386,7 @@
 	<!-- SystemConfiguration -->
 	<bean id="systemConfiguration1" class="domain.SystemConfiguration">
 		<property name="nameSystem" value="Acme Otaku" />
-		<property name="bannerUrl" value="https://i.imgur.com/mlLC3O8.jpg" />
+		<property name="bannerUrl" value="https://i.imgur.com/EdLPa1Y.png" />
 		<property name="welcomeMessageEnglish"
 			value="Welcome to Acme Otaku! We're associations that organize otaku events and activities." />
 		<property name="welcomeMessageSpanish"

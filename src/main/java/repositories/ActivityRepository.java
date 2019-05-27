@@ -21,4 +21,10 @@ public interface ActivityRepository extends JpaRepository<Activity, Integer> {
 	@Query("select a from Event e join e.activities a where a.isFinalMode = 1 and a.isFinished = 0 and e.id = ?1")
 	Collection<Activity> findActivitiesFinalModeNotFinishedByEventId(int eventId);
 
+	@Query("select distinct a from Activity a where a.isFinalMode = 1 and a.isFinished = 0 and a.deadline > CURRENT_DATE")
+	Collection<Activity> findActivitiesAvailables();
+
+	@Query("select distinct a from Activity a join a.enrolments e join e.visitor v where a.isFinished = 1 and e.status like 'ACCEPTED' and v.id = ?1")
+	Collection<Activity> findActivitiesAvailablesToScoreByVisitorId(int visitorId);
+
 }

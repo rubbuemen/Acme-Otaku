@@ -15,3 +15,15 @@ function checkPosting(message) {
 		return false;
 	}
 };
+
+function checkEvents(message) {
+	var event = document.getElementById("events").value;
+	if (event != 0 && event.length > 0) {
+		var con = confirm(message);
+		if (con) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};

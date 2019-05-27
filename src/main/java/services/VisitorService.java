@@ -14,7 +14,9 @@ import org.springframework.validation.Validator;
 import repositories.VisitorRepository;
 import security.Authority;
 import security.UserAccount;
+import domain.Activity;
 import domain.Actor;
+import domain.Box;
 import domain.Enrolment;
 import domain.Report;
 import domain.Visitor;
@@ -35,6 +37,12 @@ public class VisitorService {
 	@Autowired
 	private ActorService		actorService;
 
+	@Autowired
+	private EnrolmentService	enrolmentService;
+
+	@Autowired
+	private ReportService		reportService;
+
 
 	// Simple CRUD methods
 	// R10.1
@@ -44,11 +52,13 @@ public class VisitorService {
 		result = new Visitor();
 		final Collection<Report> reports = new HashSet<>();
 		final Collection<Enrolment> enrolments = new HashSet<>();
+		final Collection<Box> boxes = new HashSet<>();
 		final UserAccount userAccount = this.userAccountService.create();
 		final Authority auth = new Authority();
 
 		auth.setAuthority(Authority.VISITOR);
 		userAccount.addAuthority(auth);
+		result.setBoxes(boxes);
 		result.setReports(reports);
 		result.setEnrolments(enrolments);
 		result.setUserAccount(userAccount);
@@ -112,7 +122,20 @@ public class VisitorService {
 
 		this.actorService.deleteEntities(visitorLogged);
 
-		//Completar
+		final Collection<Enrolment> enrolments = new HashSet<>(visitorLogged.getEnrolments());
+		for (final Enrolment e : enrolments) {
+			final Activity a = e.getActivity();
+			a.getEnrolments().remove(e);
+			visitorLogged.getEnrolments().remove(e);
+			this.enrolmentService.delete(e);
+		}
+
+		final Collection<Report> reportsVisitor = new HashSet<>(visitorLogged.getReports());
+		for (final Report r : reportsVisitor) {
+			visitorLogged.getReports().remove(r);
+			this.reportService.deleteAuxiliar(r);
+			this.visitorRepository.save(visitorLogged);
+		}
 
 		this.visitorRepository.flush();
 		this.visitorRepository.delete(visitor);
@@ -135,6 +158,14 @@ public class VisitorService {
 		return result;
 	}
 
+	public Collection<Visitor> findVisitorsByActivityId(final int activityId) {
+		Collection<Visitor> result;
+
+		result = this.visitorRepository.findVisitorsByActivityId(activityId);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
@@ -146,6 +177,7 @@ public class VisitorService {
 		final Visitor visitor = visitorForm.getActor();
 
 		if (visitor.getId() == 0) {
+			final Collection<Box> boxes = new HashSet<>();
 			final Collection<Report> reports = new HashSet<>();
 			final Collection<Enrolment> enrolments = new HashSet<>();
 			final UserAccount userAccount = this.userAccountService.create();
@@ -158,6 +190,7 @@ public class VisitorService {
 			visitor.setEnrolments(enrolments);
 			visitor.setUserAccount(userAccount);
 			visitor.setIsSuspicious(false);
+			visitor.setBoxes(boxes);
 			visitorForm.setActor(visitor);
 		} else {
 			final Visitor res = this.visitorRepository.findOne(visitor.getId());

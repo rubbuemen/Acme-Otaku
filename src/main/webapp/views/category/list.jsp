@@ -16,25 +16,33 @@
 <%@taglib prefix="security" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="display" uri="http://displaytag.sf.net"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
 
 <%@ taglib prefix="acme" tagdir="/WEB-INF/tags"%>
 
-<display:table pagesize="5" class="displaytag" name="entidadsss" requestURI="${requestURI}" id="row">
+<display:table pagesize="5" class="displaytag" name="categories" requestURI="${requestURI}" id="row">
 
-	<spring:message code="entidad.atributo" var="atributo" />
-	<display:column property="atributo" title="${atributo}" />
+	<spring:message code="category.nameEnglish" var="nameEnglish" />
+	<display:column property="nameEnglish" title="${nameEnglish}" />
+	
+	<spring:message code="category.nameSpanish" var="nameSpanish" />
+	<display:column property="nameSpanish" title="${nameSpanish}" />
 	
 	
-	<spring:message code="entidad.edit" var="editH" />
-	<display:column title="${editH}" >
-		<acme:button url="entidad/rol/edit.do?entidadId=${row.id}" code="button.edit" />
+	<spring:message code="category.edit" var="editH" />
+	<display:column title="${editH}">
+		<acme:button url="category/administrator/edit.do?categoryId=${row.id}" code="button.edit" />
 	</display:column>
 	
-	<spring:message code="entidad.delete" var="deleteH" />
-	<display:column title="${deleteH}" >
-		<acme:button url="entidad/rol/delete.do?entidadId=${row.id}" code="button.delete" />	
+	<spring:message code="category.delete" var="deleteH" />
+	<jstl:set var = "categorysUsed" value = "${categoriesUsed}"/>
+	<jstl:set var = "category" value = "${row}"/>
+	<display:column title="${deleteH}">
+		<jstl:if test="${!fn:contains(categorysUsed, category)}">
+			<acme:button url="category/administrator/delete.do?categoryId=${row.id}" code="button.delete" />
+		</jstl:if>
 	</display:column>
 			
 </display:table>
 
-<acme:button url="entidad/rol/create.do" code="button.create" />
+<acme:button url="category/administrator/create.do" code="button.create" />

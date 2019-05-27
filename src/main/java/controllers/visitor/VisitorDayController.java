@@ -20,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import services.DayService;
 import services.EventService;
+import services.SystemConfigurationService;
 import controllers.AbstractController;
 import domain.Day;
 import domain.Event;
@@ -29,10 +30,13 @@ import domain.Event;
 public class VisitorDayController extends AbstractController {
 
 	@Autowired
-	DayService		dayService;
+	DayService					dayService;
 
 	@Autowired
-	EventService	eventService;
+	EventService				eventService;
+
+	@Autowired
+	SystemConfigurationService	systemConfigurationService;
 
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -41,9 +45,12 @@ public class VisitorDayController extends AbstractController {
 		Collection<Day> days;
 		final Event event = this.eventService.findOne(eventId);
 
+		final Double vatPercentage = this.systemConfigurationService.getConfiguration().getVATPercentage();
+
 		days = event.getDays();
 		result = new ModelAndView("day/list");
 		result.addObject("days", days);
+		result.addObject("vatPercentage", vatPercentage);
 		result.addObject("requestURI", "day/visitor/list.do");
 		result.addObject("event", event);
 

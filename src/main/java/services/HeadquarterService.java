@@ -32,10 +32,20 @@ public class HeadquarterService {
 
 
 	// Simple CRUD methods
+	//R34.2
 	public Headquarter create() {
 		Headquarter result;
 
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Member memberLogged = (Member) actorLogged;
+
+		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage meetings");
+
 		result = new Headquarter();
+
 		return result;
 	}
 
@@ -59,15 +69,30 @@ public class HeadquarterService {
 		return result;
 	}
 
+	//R34.2
 	public Headquarter save(final Headquarter headquarter) {
 		Assert.notNull(headquarter);
 
-		Headquarter result;
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
 
-		if (headquarter.getId() == 0)
+		final Member memberLogged = (Member) actorLogged;
+
+		Headquarter result;
+		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage headquarters");
+
+		if (headquarter.getId() == 0) {
 			result = this.headquarterRepository.save(headquarter);
-		else
+			final Collection<Headquarter> headquartersMemberLogged = memberLogged.getHeadquarters();
+			headquartersMemberLogged.add(result);
+			memberLogged.setHeadquarters(headquartersMemberLogged);
+			this.memberService.saveAuxiliar(memberLogged);
+		} else {
+			final Member memberOwner = this.memberService.findMemberByHeadquarterId(headquarter.getId());
+			Assert.isTrue(actorLogged.equals(memberOwner), "The logged actor is not the owner of this entity");
 			result = this.headquarterRepository.save(headquarter);
+		}
 
 		return result;
 	}
@@ -97,8 +122,42 @@ public class HeadquarterService {
 		this.headquarterRepository.delete(headquarter);
 	}
 
-
 	// Other business methods
+	//R34.2
+	public Collection<Headquarter> findHeadquartersByMemberLogged() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		Collection<Headquarter> result;
+
+		final Member memberLogged = (Member) actorLogged;
+		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage meetings");
+
+		result = this.headquarterRepository.findHeadquartersByMemberId(memberLogged.getId());
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Headquarter findHeadquarterMemberLogged(final int headquarterId) {
+		Assert.isTrue(headquarterId != 0);
+
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginMember(actorLogged);
+
+		final Member memberOwner = this.memberService.findMemberByHeadquarterId(headquarterId);
+		Assert.isTrue(actorLogged.equals(memberOwner), "The logged actor is not the owner of this entity");
+
+		Headquarter result;
+
+		result = this.headquarterRepository.findOne(headquarterId);
+		Assert.notNull(result);
+
+		return result;
+	}
+
 
 	// Reconstruct methods
 	@Autowired
