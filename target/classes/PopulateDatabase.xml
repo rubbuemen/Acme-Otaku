@@ -1695,7 +1695,6 @@
 		<property name="activities">
 			<list>
 				<ref bean="activity2" />
-				<ref bean="activity3" />
 			</list>
 		</property>
 	</bean>
@@ -1923,7 +1922,7 @@
 		<property name="description" value="Actividad donde se juega a juegos de mesas" />
 		<property name="rules" value="No vale hacer trampas" />
 		<property name="deadline" value="2019/06/10 13:30" />
-		<property name="isFinalMode" value="false" />
+		<property name="isFinalMode" value="true" />
 		<property name="isFinished" value="false" />
 		<property name="category" ref="category5" />
 	</bean>

@@ -41,7 +41,9 @@
 	
 	<spring:message code="member.changeRol" var="changeH" />
 	<display:column title="${changeH}" >
-		<acme:button url="member/member/edit.do?memberId=${row.id}" code="button.edit" />
+		<jstl:if test="${row.role != 'PRESIDENT'}">
+			<acme:button url="member/member/edit.do?memberId=${row.id}" code="button.edit" />
+		</jstl:if>
 	</display:column>
 			
 </display:table>

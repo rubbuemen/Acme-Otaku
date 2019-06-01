@@ -159,7 +159,6 @@ public class MemberService {
 
 		result = this.memberRepository.findMembersByAssociationId(memberLogged.getAssociation().getId());
 		Assert.notNull(result);
-		result.remove(memberLogged);
 
 		return result;
 	}

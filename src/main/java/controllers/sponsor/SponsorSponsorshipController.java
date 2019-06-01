@@ -148,7 +148,7 @@ public class SponsorSponsorshipController extends AbstractController {
 			result = new ModelAndView("redirect:/welcome/index.do");
 		else {
 			final Collection<String> creditCardMakes = this.systemConfigurationService.getConfiguration().getCreditCardMakes();
-			final Collection<Event> eventsFinalMode = this.eventService.findEventsFinalModeNotFinished();
+			final Collection<Event> eventsFinalMode = this.eventService.findEventsFinalModeNotFinishedSponsor();
 			if (sponsorship.getId() == 0)
 				result = new ModelAndView("sponsorship/create");
 			else

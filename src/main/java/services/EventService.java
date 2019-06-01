@@ -18,10 +18,7 @@ import domain.Actor;
 import domain.Day;
 import domain.Event;
 import domain.Member;
-import domain.Seller;
-import domain.Sponsor;
 import domain.Sponsorship;
-import domain.Visitor;
 
 @Service
 @Transactional
@@ -248,16 +245,36 @@ public class EventService {
 	}
 
 	//R15.1
-	public Collection<Event> findEventsFinalModeNotFinished() {
+	public Collection<Event> findEventsFinalModeNotFinishedVisitor() {
 		final Actor actorLogged = this.actorService.findActorLogged();
 		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginVisitor(actorLogged);
 
-		if (actorLogged instanceof Visitor)
-			this.actorService.checkUserLoginVisitor(actorLogged);
-		else if (actorLogged instanceof Seller)
-			this.actorService.checkUserLoginSeller(actorLogged);
-		else if (actorLogged instanceof Sponsor)
-			this.actorService.checkUserLoginSponsor(actorLogged);
+		Collection<Event> result;
+
+		result = this.eventRepository.findEventsFinalModeNotFinished();
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Collection<Event> findEventsFinalModeNotFinishedSeller() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSeller(actorLogged);
+
+		Collection<Event> result;
+
+		result = this.eventRepository.findEventsFinalModeNotFinished();
+		Assert.notNull(result);
+
+		return result;
+	}
+
+	public Collection<Event> findEventsFinalModeNotFinishedSponsor() {
+		final Actor actorLogged = this.actorService.findActorLogged();
+		Assert.notNull(actorLogged);
+		this.actorService.checkUserLoginSponsor(actorLogged);
 
 		Collection<Event> result;
 

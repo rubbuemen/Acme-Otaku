@@ -33,7 +33,7 @@ public class VisitorEventController extends AbstractController {
 		ModelAndView result;
 		Collection<Event> events;
 
-		events = this.eventService.findEventsFinalModeNotFinished();
+		events = this.eventService.findEventsFinalModeNotFinishedVisitor();
 
 		result = new ModelAndView("event/list");
 

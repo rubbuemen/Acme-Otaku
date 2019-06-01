@@ -116,29 +116,33 @@ public class DayService {
 					if (day.getDate() != null)
 						Assert.isTrue(day.getDate().compareTo(nextDay.getDate()) < 0, "The current day's date must be before than the next day's date");
 					result = this.dayRepository.save(day);
-					daysEvent.remove(day);
-					for (final Day d : daysEvent) {
-						final Calendar cal = Calendar.getInstance();
-						cal.setTime(day.getDate());
-						cal.add(Calendar.DATE, 1);
-						d.setDate(cal.getTime());
-						this.dayRepository.save(d);
-						day = d;
+					if (day.getDate() != null) {
+						daysEvent.remove(day);
+						for (final Day d : daysEvent) {
+							final Calendar cal = Calendar.getInstance();
+							cal.setTime(day.getDate());
+							cal.add(Calendar.DATE, 1);
+							d.setDate(cal.getTime());
+							this.dayRepository.save(d);
+							day = d;
+						}
 					}
 				} else if (daysEvent.get(daysEvent.size() - 1).equals(day)) {
 					final Day previousDay = daysEvent.get(daysEvent.size() - 2);
 					if (day.getDate() != null)
 						Assert.isTrue(day.getDate().compareTo(previousDay.getDate()) > 0, "The current day's date must be after than the previous day's date");
 					result = this.dayRepository.save(day);
-					daysEvent.remove(day);
-					Collections.reverse(daysEvent);
-					for (final Day d : daysEvent) {
-						final Calendar cal = Calendar.getInstance();
-						cal.setTime(day.getDate());
-						cal.add(Calendar.DATE, -1);
-						d.setDate(cal.getTime());
-						this.dayRepository.save(d);
-						day = d;
+					if (day.getDate() != null) {
+						daysEvent.remove(day);
+						Collections.reverse(daysEvent);
+						for (final Day d : daysEvent) {
+							final Calendar cal = Calendar.getInstance();
+							cal.setTime(day.getDate());
+							cal.add(Calendar.DATE, -1);
+							d.setDate(cal.getTime());
+							this.dayRepository.save(d);
+							day = d;
+						}
 					}
 				} else {
 					final int actualIndex = daysEvent.indexOf(day);

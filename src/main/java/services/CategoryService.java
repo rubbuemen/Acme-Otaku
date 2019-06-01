@@ -93,7 +93,7 @@ public class CategoryService {
 	}
 
 	// Other business methods
-	public Collection<Category> findPositionsBrotherhoodUsed() {
+	public Collection<Category> findCategoriesUsed() {
 		final Actor actorLogged = this.actorService.findActorLogged();
 		Assert.notNull(actorLogged);
 		this.actorService.checkUserLoginAdministrator(actorLogged);

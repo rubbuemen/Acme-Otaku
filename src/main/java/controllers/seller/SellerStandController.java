@@ -154,7 +154,7 @@ public class SellerStandController extends AbstractController {
 				result = new ModelAndView("stand/create");
 			else
 				result = new ModelAndView("stand/edit");
-			final Collection<Event> events = this.eventService.findEventsFinalModeNotFinished();
+			final Collection<Event> events = this.eventService.findEventsFinalModeNotFinishedSeller();
 			final Collection<String> types = new HashSet<>();
 			Collections.addAll(types, "COMMERCIAL", "ARTISAN", "FOOD");
 			result.addObject("events", events);

@@ -41,7 +41,7 @@ public class AdministratorCategoryController extends AbstractController {
 		Collection<Category> categories;
 
 		categories = this.categoryService.findAll();
-		final Collection<Category> categoriesUsed = this.categoryService.findPositionsBrotherhoodUsed();
+		final Collection<Category> categoriesUsed = this.categoryService.findCategoriesUsed();
 
 		result = new ModelAndView("category/list");
 

@@ -98,7 +98,7 @@ public class StandService {
 				Assert.isTrue(foodStandsEvent.size() + 1 <= 4, "The maximum limit of food stands is 4 in one of the selected events");
 			}
 
-		final Collection<Event> events = this.eventService.findEventsFinalModeNotFinished();
+		final Collection<Event> events = this.eventService.findEventsFinalModeNotFinishedSeller();
 		if (!stand.getEvents().isEmpty())
 			Assert.isTrue(events.containsAll(stand.getEvents()), "This event is not available to associate it with a stand");
 
