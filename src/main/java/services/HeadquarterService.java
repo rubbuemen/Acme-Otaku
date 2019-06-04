@@ -42,7 +42,7 @@ public class HeadquarterService {
 
 		final Member memberLogged = (Member) actorLogged;
 
-		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage meetings");
+		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage headquarters");
 
 		result = new Headquarter();
 
@@ -132,7 +132,7 @@ public class HeadquarterService {
 		Collection<Headquarter> result;
 
 		final Member memberLogged = (Member) actorLogged;
-		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage meetings");
+		Assert.isTrue(memberLogged.getRole().equals("PRESIDENT"), "You have to be the president of the association for manage headquarters");
 
 		result = this.headquarterRepository.findHeadquartersByMemberId(memberLogged.getId());
 		Assert.notNull(result);

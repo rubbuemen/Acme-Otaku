@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
- * PopulateDatabase.xml
- *
- * Copyright (C) 2019 Universidad de Sevilla
- * 
- * The use of this project is hereby constrained to the conditions of the 
- * TDG Licence, a copy of which you may download from 
- * http://www.tdg-seville.info/License.html
- -->
+<!-- * PopulateDatabase.xml * * Copyright (C) 2019 Universidad de Sevilla 
+	* * The use of this project is hereby constrained to the conditions of the 
+	* TDG Licence, a copy of which you may download from * http://www.tdg-seville.info/License.html -->
 
 <beans xmlns="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	">
-	
+
 	<!-- User accounts -->
 
 	<bean id="userAccount1" class="security.UserAccount">
@@ -54,73 +48,181 @@
 			</list>
 		</property>
 	</bean>
-	
+
 	<!-- Administrator -->
 	<bean id="administrator1" class="domain.Administrator">
 		<property name="name" value="Rubén" />
-		<property name="surnames" value="Bueno Menéndez" />
-		<property name="VATNumber" value="TU463" />
-		<property name="creditCard" ref="creditCard1" />
+		<property name="middleName" value="admin" />
+		<property name="surname" value="Bueno Menéndez" />
 		<property name="photo" value="http://oi68.tinypic.com/oh4r9j.jpg" />
-		<property name="email" value="rubbuemen@acmerookierank.com" />
+		<property name="email" value="rubbuemen@acmeotaku.com" />
 		<property name="phoneNumber" value="662839501" />
 		<property name="address" value="41005 Sevilla" />
 		<property name="userAccount" ref="userAccount1" />
+		<property name="isSuspicious" value="false" />
+		<property name="boxes">
+			<list>
+				<ref bean="box1" />
+				<ref bean="box2" />
+				<ref bean="box3" />
+				<ref bean="box4" />
+				<ref bean="box5" />
+			</list>
+		</property>
 	</bean>
 	<bean id="administrator2" class="domain.Administrator">
 		<property name="name" value="System" />
-		<property name="surnames" value="Administrator" />
-		<property name="VATNumber" value="TU463" />
-		<property name="creditCard" ref="creditCard1" />
-		<property name="email" value="&lt;noreply@acmerookierank.com&gt;" />
+		<property name="surname" value="Administrator" />
+		<property name="email" value="&lt;noreply@acmeotaku.com&gt;" />
 		<property name="userAccount" ref="userAccount2" />
+		<property name="isSuspicious" value="false" />
+		<property name="boxes">
+			<list>
+				<ref bean="box6" />
+				<ref bean="box7" />
+				<ref bean="box8" />
+				<ref bean="box9" />
+				<ref bean="box10" />
+			</list>
+		</property>
 	</bean>
 	<bean id="administrator3" class="domain.Administrator">
 		<property name="name" value="User deleted" />
-		<property name="surnames" value="---" />
-		<property name="VATNumber" value="TU463" />
-		<property name="creditCard" ref="creditCard1" />
-		<property name="email" value="&lt;noreply@acmerookierank.com&gt;" />
+		<property name="surname" value="---" />
+		<property name="email" value="&lt;noreply@acmeotaku.com&gt;" />
 		<property name="userAccount" ref="userAccount3" />
+		<property name="isSuspicious" value="false" />
+		<property name="boxes">
+			<list>
+				<ref bean="box11" />
+				<ref bean="box12" />
+				<ref bean="box13" />
+				<ref bean="box14" />
+				<ref bean="box15" />
+			</list>
+		</property>
 	</bean>
-	
-	<!-- CreditCard -->
-	<bean id="creditCard1" class="domain.CreditCard">
-		<property name="holder" value="Rubén Bueno Menéndez" />
-		<property name="makeCreditCard" value="VISA" />
-		<property name="number" value="4539888159789783" />
-		<property name="expirationMonth" value="9" />
-		<property name="expirationYear" value="24" />
-		<property name="cvv" value="909" />
+
+	<!-- Box -->
+	<bean id="box1" class="domain.Box">
+		<property name="name" value="In box" />
+		<property name="isSystemBox" value="true" />
 	</bean>
-	
-		<!-- SystemConfiguration -->
+	<bean id="box2" class="domain.Box">
+		<property name="name" value="Out box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box3" class="domain.Box">
+		<property name="name" value="Trash box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box4" class="domain.Box">
+		<property name="name" value="Spam box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box5" class="domain.Box">
+		<property name="name" value="Notification box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box6" class="domain.Box">
+		<property name="name" value="In box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box7" class="domain.Box">
+		<property name="name" value="Out box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box8" class="domain.Box">
+		<property name="name" value="Trash box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box9" class="domain.Box">
+		<property name="name" value="Spam box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box10" class="domain.Box">
+		<property name="name" value="Notification box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box11" class="domain.Box">
+		<property name="name" value="In box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box12" class="domain.Box">
+		<property name="name" value="Out box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box13" class="domain.Box">
+		<property name="name" value="Trash box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box14" class="domain.Box">
+		<property name="name" value="Spam box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+	<bean id="box15" class="domain.Box">
+		<property name="name" value="Notification box" />
+		<property name="isSystemBox" value="true" />
+	</bean>
+
+	<!-- Category -->
+	<bean id="category1" class="domain.Category">
+		<property name="nameEnglish" value="Contest" />
+		<property name="nameSpanish" value="Concurso" />
+	</bean>
+	<bean id="category2" class="domain.Category">
+		<property name="nameEnglish" value="Singing" />
+		<property name="nameSpanish" value="Canto" />
+	</bean>
+	<bean id="category3" class="domain.Category">
+		<property name="nameEnglish" value="Cosplay" />
+		<property name="nameSpanish" value="Cosplay" />
+	</bean>
+	<bean id="category4" class="domain.Category">
+		<property name="nameEnglish" value="Japan" />
+		<property name="nameSpanish" value="Japón" />
+	</bean>
+	<bean id="category5" class="domain.Category">
+		<property name="nameEnglish" value="Workshop" />
+		<property name="nameSpanish" value="Taller" />
+	</bean>
+	<bean id="category6" class="domain.Category">
+		<property name="nameEnglish" value="Makeup" />
+		<property name="nameSpanish" value="Maquillaje" />
+	</bean>
+	<bean id="category7" class="domain.Category">
+		<property name="nameEnglish" value="Food" />
+		<property name="nameSpanish" value="Comida" />
+	</bean>
+
+	<!-- SystemConfiguration -->
 	<bean id="systemConfiguration1" class="domain.SystemConfiguration">
 		<property name="nameSystem" value="Acme Otaku" />
-		<property name="bannerUrl" value="https://i.imgur.com/6kbPiIn.jpg" />
+		<property name="bannerUrl" value="https://i.imgur.com/EdLPa1Y.png" />
 		<property name="welcomeMessageEnglish"
-			value="Welcome to Acme Otaku! We're IT rookie's favourite job marketplace!" />
+			value="Welcome to Acme Otaku! We're associations that organize otaku events and activities." />
 		<property name="welcomeMessageSpanish"
-			value="¡Bienvenidos a Acme Otaku! ¡Somos el mercado de trabajo favorito de los profesionales de las TICs!" />
-		<property name="phoneCountryCode" value="+34" />
-		<property name="periodFinder" value="1" />
-		<property name="maxResultsFinder" value="10" />
+			value="¡Bienvenidos a Acme Otaku! Somos asociaciones que organizan eventos y actividades otakus" />
 		<property name="spamWords">
 			<list>
 				<value>sex</value>
 				<value>viagra</value>
 				<value>cialis</value>
-				<value>one million</value>
-				<value>you've been selected</value>
-				<value>Nigeria</value>
+				<value>hentai</value>
+				<value>weaboo</value>
 				<value>sexo</value>
-				<value>un millón</value>
-				<value>ha sido seleccionado</value>
 			</list>
 		</property>
-		<property name="fare" value="49.99" />
 		<property name="VATPercentage" value="21.00" />
-		<property name="isNotifiedRebrand" value="false" />
-	</bean>	
-	
+		<property name="phoneCountryCode" value="+34" />
+		<property name="creditCardMakes">
+			<list>
+				<value>VISA</value>
+				<value>MASTER</value>
+				<value>DINNERS</value>
+				<value>AMEX</value>
+			</list>
+		</property>
+	</bean>
+
 </beans>
